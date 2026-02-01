@@ -1,43 +1,35 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import React from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-
-const AIR_BLUE = '#0EA5E9';
-const AIR_SKY = '#E0F2FE';
-const GRAY_BORDER = '#E5E7EB';
+const AIR_BLUE = "#0EA5E9";
+const AIR_SKY = "#E0F2FE";
+const GRAY_BORDER = "#E5E7EB";
+const GRAY_TEXT = "#6B7280";
 
 export default function MainScreen({ navigation }) {
-    const navigate = useNavigation();
-    const navigateToLogin = () => {
-        navigate.navigate('Login');
-    }
-    const navigateToRegister = () => {
-        navigate.navigate('Register');
-    }
+  const navigate = useNavigation();
+  const navigateToLogin = () => {
+    navigate.navigate("Login");
+  };
+  const navigateToRegister = () => {
+    navigate.navigate("Register");
+  };
   return (
     <View style={styles.safeArea}>
       <View style={styles.container}>
         {/* Central Content Container */}
         <View style={styles.centralContent}>
-          {/* Logo and Text */}
-          <View style={styles.heroContainer}>
-            {/* Logo Box */}
-            <View style={styles.logoBox}>
-              <Ionicons name="briefcase" size={48} color="#FFF" />
-            </View>
-
-            {/* Platform Name */}
-            <Text style={styles.platformName}>FAF</Text>
-
-            {/* Slogan */}
-            <Text style={styles.slogan}>Connecting talent with purpose.</Text>
+          {/* Logo and Header */}
+          <View style={styles.headerContainer}>
+            <Image
+              source={require("../assets/logo.png")}
+              style={styles.logoImage}
+              resizeMode="contain"
+            />
+            <Text style={styles.welcomeSubtitle}>
+              Connecting talent with purpose.
+            </Text>
           </View>
 
           {/* Buttons Container */}
@@ -76,70 +68,34 @@ const styles = StyleSheet.create({
   },
   centralContent: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
-  topBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 4,
+  headerContainer: {
+    alignItems: "center",
     marginBottom: 40,
   },
-  globeButton: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
+  logoImage: {
+    width: 200,
+    height: 200,
   },
-  languageText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
-  },
-  heroContainer: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  logoBox: {
-    width: 120,
-    height: 120,
-    borderRadius: 24,
-    backgroundColor: AIR_BLUE,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 24,
-    shadowColor: AIR_BLUE,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  platformName: {
-    fontSize: 48,
-    fontWeight: '800',
-    color: '#000',
-    marginBottom: 12,
-    letterSpacing: 1,
-  },
-  slogan: {
-    fontSize: 16,
-    color: '#6B7280',
-    textAlign: 'center',
-    fontWeight: '500',
-    paddingHorizontal: 40,
+  welcomeSubtitle: {
+    fontSize: 14,
+    color: GRAY_TEXT,
+    textAlign: "center",
+    paddingHorizontal: 20,
   },
   buttonsContainer: {
-    width: '100%',
+    width: "100%",
     gap: 16,
   },
   signInButton: {
-    width: '100%',
+    width: "100%",
     height: 56,
     borderRadius: 16,
     backgroundColor: AIR_BLUE,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     shadowColor: AIR_BLUE,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.4,
@@ -147,30 +103,30 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   signInButtonText: {
-    color: '#FFF',
+    color: "#FFF",
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.5,
   },
   createAccountButton: {
-    width: '100%',
+    width: "100%",
     height: 56,
     borderRadius: 16,
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
     borderWidth: 2,
     borderColor: GRAY_BORDER,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
   },
   createAccountButtonText: {
-    color: '#000',
+    color: "#000",
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.5,
   },
 });
