@@ -21,7 +21,7 @@ const GRAY_BORDER = "#E5E7EB";
 // Mock user data
 const MOCK_USERS = [
   {
-    email: "worker@faf.com",
+    email: "worker@gmail.com",
     password: "123456",
   },
 ];
@@ -65,7 +65,7 @@ export default function LoginScreen({ navigation }) {
     const user = MOCK_USERS.find(
       (u) =>
         u.email.toLowerCase() === email.trim().toLowerCase() &&
-        u.password === password
+        u.password === password,
     );
 
     if (user) {
@@ -240,7 +240,6 @@ export default function LoginScreen({ navigation }) {
           {/* Sign In Button */}
           <TouchableOpacity style={styles.signInButton} onPress={handleLogin}>
             <Text style={styles.signInButtonText}>Sign in</Text>
-            <Ionicons name="arrow-forward" size={20} color="#FFF" />
           </TouchableOpacity>
 
           {/* Divider */}
@@ -329,14 +328,14 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     alignItems: "center",
-    marginBottom: 4,
+    marginBottom: 20,
   },
   logoContainer: {
     alignItems: "center",
   },
   logoImage: {
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
   },
   welcomeTitle: {
     fontSize: 22,
@@ -353,7 +352,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: "100%",
-    marginBottom: 8,
+    marginBottom: 20,
   },
   inputWrapper: {
     marginBottom: 10,
@@ -451,7 +450,7 @@ const styles = StyleSheet.create({
   dividerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 12,
+    marginBottom: 15,
   },
   dividerLine: {
     flex: 1,

@@ -1,76 +1,73 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-const AIR_BLUE = '#0EA5E9';
-const AIR_SKY = '#E0F2FE';
-const GRAY_TEXT = '#9CA3AF';
-const GRAY_BORDER = '#E5E7EB';
+const AIR_BLUE = "#0EA5E9";
+const AIR_SKY = "#E0F2FE";
+const GRAY_TEXT = "#9CA3AF";
+const GRAY_BORDER = "#E5E7EB";
 
 export default function HomeScreen({ navigation }) {
-  const [jobType, setJobType] = useState('Short-term');
+  const [jobType, setJobType] = useState("Short-term");
 
   // Sample job data
   const jobs = [
     {
       id: 1,
-      title: 'Freelance UI Designer',
-      company: 'TechFlow Studio',
-      location: 'Remote',
-      price: '$800',
-      priceType: 'FIXED PRICE',
-      icon: 'game-controller-outline',
-      iconColor: '#9333EA',
+      title: "Freelance UI Designer",
+      company: "TechFlow Studio",
+      location: "Remote",
+      price: "$800",
+      priceType: "FIXED PRICE",
+      icon: "game-controller-outline",
+      iconColor: "#9333EA",
       badges: [
-        { text: 'Escrow Secured', color: '#10B981', icon: 'checkmark' },
-        { text: 'Urgent', color: '#F3F4F6', textColor: '#6B7280' },
+        { text: "Escrow Secured", color: "#10B981", icon: "checkmark" },
+        { text: "Urgent", color: "#F3F4F6", textColor: "#6B7280" },
       ],
-      action: 'View Details',
+      action: "View Details",
     },
     {
       id: 2,
-      title: 'Junior React Developer',
-      company: 'Innovate Corp',
-      location: 'Hybrid',
-      price: '$65k',
-      priceType: 'PER YEAR',
-      icon: 'code-outline',
-      iconColor: '#D97706',
+      title: "Junior React Developer",
+      company: "Innovate Corp",
+      location: "Hybrid",
+      price: "$65k",
+      priceType: "PER YEAR",
+      icon: "code-outline",
+      iconColor: "#D97706",
       badges: [
-        { text: 'Direct Hire', color: AIR_BLUE, icon: 'diamond-outline' },
-        { text: 'Full-time', color: '#FFF', textColor: '#6B7280' },
+        { text: "Direct Hire", color: AIR_BLUE, icon: "diamond-outline" },
+        { text: "Full-time", color: "#FFF", textColor: "#6B7280" },
       ],
-      action: 'Apply Now',
+      action: "Apply Now",
     },
     {
       id: 3,
-      title: 'SEO Content Writer',
-      company: 'GreenLiving',
-      location: 'Remote',
-      price: '$150',
-      priceType: 'FIXED PRICE',
-      icon: 'document-text-outline',
-      iconColor: '#EC4899',
+      title: "SEO Content Writer",
+      company: "GreenLiving",
+      location: "Remote",
+      price: "$150",
+      priceType: "FIXED PRICE",
+      icon: "document-text-outline",
+      iconColor: "#EC4899",
       badges: [
-        { text: 'Escrow Secured', color: '#10B981', icon: 'checkmark' },
-        { text: '1 week', color: '#F3F4F6', textColor: '#6B7280' },
+        { text: "Escrow Secured", color: "#10B981", icon: "checkmark" },
+        { text: "1 week", color: "#F3F4F6", textColor: "#6B7280" },
       ],
-      action: 'View Details',
+      action: "View Details",
     },
   ];
 
   return (
     <View style={styles.safeArea}>
-      <ScrollView
-        style={styles.container}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Top Bar */}
         <View style={styles.topBar}>
           <View style={styles.logoContainer}>
@@ -120,19 +117,19 @@ export default function HomeScreen({ navigation }) {
           <TouchableOpacity
             style={[
               styles.jobTypeButton,
-              jobType === 'Short-term' && styles.jobTypeButtonActive,
+              jobType === "Short-term" && styles.jobTypeButtonActive,
             ]}
-            onPress={() => setJobType('Short-term')}
+            onPress={() => setJobType("Short-term")}
           >
             <Ionicons
               name="flash"
               size={20}
-              color={jobType === 'Short-term' ? AIR_BLUE : GRAY_TEXT}
+              color={jobType === "Short-term" ? AIR_BLUE : GRAY_TEXT}
             />
             <Text
               style={[
                 styles.jobTypeText,
-                jobType === 'Short-term' && styles.jobTypeTextActive,
+                jobType === "Short-term" && styles.jobTypeTextActive,
               ]}
             >
               Short-term
@@ -141,19 +138,19 @@ export default function HomeScreen({ navigation }) {
           <TouchableOpacity
             style={[
               styles.jobTypeButton,
-              jobType === 'Long-term' && styles.jobTypeButtonActive,
+              jobType === "Long-term" && styles.jobTypeButtonActive,
             ]}
-            onPress={() => setJobType('Long-term')}
+            onPress={() => setJobType("Long-term")}
           >
             <Ionicons
               name="briefcase-outline"
               size={20}
-              color={jobType === 'Long-term' ? AIR_BLUE : GRAY_TEXT}
+              color={jobType === "Long-term" ? AIR_BLUE : GRAY_TEXT}
             />
             <Text
               style={[
                 styles.jobTypeText,
-                jobType === 'Long-term' && styles.jobTypeTextActive,
+                jobType === "Long-term" && styles.jobTypeTextActive,
               ]}
             >
               Long-term
@@ -174,7 +171,9 @@ export default function HomeScreen({ navigation }) {
           {jobs.map((job) => (
             <View key={job.id} style={styles.jobCard}>
               <View style={styles.jobCardHeader}>
-                <View style={[styles.jobIcon, { backgroundColor: job.iconColor }]}>
+                <View
+                  style={[styles.jobIcon, { backgroundColor: job.iconColor }]}
+                >
                   <Ionicons name={job.icon} size={24} color="#FFF" />
                 </View>
                 <View style={styles.jobPriceContainer}>
@@ -201,14 +200,14 @@ export default function HomeScreen({ navigation }) {
                       <Ionicons
                         name={badge.icon}
                         size={12}
-                        color={badge.textColor || '#FFF'}
+                        color={badge.textColor || "#FFF"}
                         style={styles.badgeIcon}
                       />
                     )}
                     <Text
                       style={[
                         styles.badgeText,
-                        { color: badge.textColor || '#FFF' },
+                        { color: badge.textColor || "#FFF" },
                       ]}
                     >
                       {badge.text}
@@ -244,69 +243,70 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: AIR_SKY,
+    paddingTop: 30,
   },
   container: {
     flex: 1,
   },
   topBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 16,
     backgroundColor: AIR_SKY,
   },
   logoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   logoCircle: {
     width: 40,
     height: 40,
     borderRadius: 20,
     backgroundColor: AIR_BLUE,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: 8,
   },
   logoText: {
     fontSize: 20,
-    fontWeight: '800',
-    color: '#FFF',
+    fontWeight: "800",
+    color: "#FFF",
   },
   brandText: {
     fontSize: 24,
-    fontWeight: '800',
-    color: '#000',
+    fontWeight: "800",
+    color: "#000",
   },
   topRightIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
   },
   iconButton: {
-    position: 'relative',
+    position: "relative",
     width: 40,
     height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   notificationBadge: {
-    position: 'absolute',
+    position: "absolute",
     top: 8,
     right: 8,
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#EF4444',
+    backgroundColor: "#EF4444",
   },
   profileButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#D97706',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#D97706",
+    alignItems: "center",
+    justifyContent: "center",
   },
   heroSection: {
     paddingHorizontal: 20,
@@ -315,8 +315,8 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     fontSize: 32,
-    fontWeight: '800',
-    color: '#000',
+    fontWeight: "800",
+    color: "#000",
     marginBottom: 8,
   },
   heroTitleBlue: {
@@ -331,34 +331,34 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   bannerImage: {
-    width: '100%',
+    width: "100%",
     height: 180,
     borderRadius: 20,
-    backgroundColor: '#E5E7EB',
-    overflow: 'hidden',
-    position: 'relative',
+    backgroundColor: "#E5E7EB",
+    overflow: "hidden",
+    position: "relative",
   },
   bannerOverlay: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 16,
     left: 16,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
   },
   bannerOverlayText: {
-    color: '#FFF',
+    color: "#FFF",
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   getStartedButton: {
     backgroundColor: AIR_BLUE,
     borderRadius: 12,
     height: 52,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     shadowColor: AIR_BLUE,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
@@ -367,13 +367,13 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   getStartedText: {
-    color: '#FFF',
+    color: "#FFF",
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   jobTypeContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#FFF',
+    flexDirection: "row",
+    backgroundColor: "#FFF",
     borderRadius: 12,
     padding: 4,
     marginHorizontal: 20,
@@ -381,9 +381,9 @@ const styles = StyleSheet.create({
   },
   jobTypeButton: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 12,
     borderRadius: 8,
     gap: 8,
@@ -395,27 +395,27 @@ const styles = StyleSheet.create({
   },
   jobTypeText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: GRAY_TEXT,
   },
   jobTypeTextActive: {
     color: AIR_BLUE,
   },
   featuredHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 20,
     marginBottom: 16,
   },
   featuredTitle: {
     fontSize: 20,
-    fontWeight: '800',
-    color: '#000',
+    fontWeight: "800",
+    color: "#000",
   },
   seeAllText: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
     color: AIR_BLUE,
   },
   jobsContainer: {
@@ -424,35 +424,35 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   jobCard: {
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
     borderRadius: 16,
     padding: 16,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 3,
   },
   jobCardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     marginBottom: 12,
   },
   jobIcon: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   jobPriceContainer: {
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
   jobPrice: {
     fontSize: 20,
-    fontWeight: '800',
-    color: '#000',
+    fontWeight: "800",
+    color: "#000",
   },
   jobPriceType: {
     fontSize: 12,
@@ -461,8 +461,8 @@ const styles = StyleSheet.create({
   },
   jobTitle: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#000',
+    fontWeight: "700",
+    color: "#000",
     marginBottom: 4,
   },
   jobCompany: {
@@ -471,14 +471,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   badgesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 8,
     marginBottom: 12,
   },
   badge: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 12,
@@ -489,59 +489,59 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   jobActionButton: {
     paddingVertical: 8,
   },
   jobActionText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#6B7280',
+    fontWeight: "600",
+    color: "#6B7280",
   },
   verifySection: {
     marginHorizontal: 20,
     marginBottom: 24,
     borderRadius: 20,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   verifyBackground: {
-    width: '100%',
+    width: "100%",
     height: 200,
-    backgroundColor: '#1F2937',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#1F2937",
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 20,
   },
   verifyOverlay: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   verifyTitle: {
     fontSize: 24,
-    fontWeight: '800',
-    color: '#FFF',
+    fontWeight: "800",
+    color: "#FFF",
     marginBottom: 8,
-    textAlign: 'center',
+    textAlign: "center",
   },
   verifySubtitle: {
     fontSize: 14,
-    color: '#FFF',
+    color: "#FFF",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   verifyButton: {
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
     borderRadius: 12,
     paddingHorizontal: 24,
     paddingVertical: 12,
   },
   verifyButtonText: {
     fontSize: 16,
-    fontWeight: '700',
-    color: '#000',
+    fontWeight: "700",
+    color: "#000",
   },
 });

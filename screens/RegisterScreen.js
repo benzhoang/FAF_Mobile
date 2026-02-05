@@ -192,7 +192,6 @@ export default function RegisterScreen({ navigation }) {
             onPress={() => navigation?.navigate("Login")}
           >
             <Text style={styles.createAccountButtonText}>Create Account</Text>
-            <Ionicons name="arrow-forward" size={18} color="#FFF" />
           </TouchableOpacity>
 
           {/* Divider */}
@@ -270,8 +269,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logoImage: {
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
   },
   welcomeTitle: {
     fontSize: 22,
