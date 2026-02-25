@@ -63,11 +63,10 @@ export default function RegisterScreen({ navigation }) {
           <View style={styles.inputContainer}>
             {/* Full Name */}
             <View style={styles.inputWrapper}>
-              <Text style={styles.inputLabel}>FULL NAME</Text>
               <View style={styles.inputFieldContainer}>
                 <TextInput
                   style={styles.inputField}
-                  placeholder="Jane Doe"
+                  placeholder="Full Name"
                   placeholderTextColor={GRAY_TEXT}
                   value={fullName}
                   onChangeText={setFullName}
@@ -84,11 +83,10 @@ export default function RegisterScreen({ navigation }) {
 
             {/* Email Address */}
             <View style={styles.inputWrapper}>
-              <Text style={styles.inputLabel}>EMAIL ADDRESS</Text>
               <View style={styles.inputFieldContainer}>
                 <TextInput
                   style={styles.inputField}
-                  placeholder="jane@example.com"
+                  placeholder="Email Address"
                   placeholderTextColor={GRAY_TEXT}
                   value={email}
                   onChangeText={setEmail}
@@ -107,11 +105,10 @@ export default function RegisterScreen({ navigation }) {
 
             {/* Password */}
             <View style={styles.inputWrapper}>
-              <Text style={styles.inputLabel}>PASSWORD</Text>
               <View style={styles.inputFieldContainer}>
                 <TextInput
                   style={styles.inputField}
-                  placeholder="Enter your password"
+                  placeholder="Password"
                   placeholderTextColor={GRAY_TEXT}
                   value={password}
                   onChangeText={setPassword}
@@ -134,11 +131,10 @@ export default function RegisterScreen({ navigation }) {
 
             {/* Confirm Password */}
             <View style={styles.inputWrapper}>
-              <Text style={styles.inputLabel}>CONFIRM PASSWORD</Text>
               <View style={styles.inputFieldContainer}>
                 <TextInput
                   style={styles.inputField}
-                  placeholder="Confirm your password"
+                  placeholder="Confirm Password"
                   placeholderTextColor={GRAY_TEXT}
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
@@ -263,7 +259,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     alignItems: "center",
-    marginBottom: 4,
+    marginBottom: 20,
   },
   logoContainer: {
     alignItems: "center",
@@ -335,13 +331,6 @@ const styles = StyleSheet.create({
   inputWrapper: {
     marginBottom: 10,
   },
-  inputLabel: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: "#000",
-    marginBottom: 6,
-    letterSpacing: 0.5,
-  },
   inputFieldContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -351,6 +340,7 @@ const styles = StyleSheet.create({
     borderColor: GRAY_BORDER,
     paddingHorizontal: 16,
     height: 46,
+    marginBottom: 10,
   },
   inputField: {
     flex: 1,

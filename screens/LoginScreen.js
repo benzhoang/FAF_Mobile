@@ -163,11 +163,10 @@ export default function LoginScreen({ navigation }) {
           <View style={styles.inputContainer}>
             {/* Email Input */}
             <View style={styles.inputWrapper}>
-              <Text style={styles.inputLabel}>EMAIL ADDRESS</Text>
               <View style={styles.inputFieldContainer}>
                 <TextInput
                   style={styles.inputField}
-                  placeholder="name@company.com"
+                  placeholder="Email Address"
                   placeholderTextColor={GRAY_TEXT}
                   value={email}
                   onChangeText={setEmail}
@@ -186,11 +185,10 @@ export default function LoginScreen({ navigation }) {
 
             {/* Password Input */}
             <View style={styles.inputWrapper}>
-              <Text style={styles.inputLabel}>PASSWORD</Text>
               <View style={styles.inputFieldContainer}>
                 <TextInput
                   style={styles.inputField}
-                  placeholder="Enter your password"
+                  placeholder="Password"
                   placeholderTextColor={GRAY_TEXT}
                   value={password}
                   onChangeText={setPassword}
@@ -357,13 +355,6 @@ const styles = StyleSheet.create({
   inputWrapper: {
     marginBottom: 10,
   },
-  inputLabel: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: "#000",
-    marginBottom: 6,
-    letterSpacing: 0.5,
-  },
   inputFieldContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -373,6 +364,7 @@ const styles = StyleSheet.create({
     borderColor: GRAY_BORDER,
     paddingHorizontal: 16,
     height: 46,
+    marginBottom: 10,
   },
   inputField: {
     flex: 1,

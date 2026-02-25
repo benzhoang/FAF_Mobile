@@ -9,6 +9,8 @@ import HomeScreen from "../screens/HomeScreen";
 import ExploreScreen from "../screens/ExploreScreen";
 import MessageScreen from "../screens/MessageScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import NotificationScreen from "../screens/NotificationScreen";
+import JobDetailScreen from "../screens/JobDetailScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -36,6 +38,30 @@ export default function Navigator() {
           name="Home"
           component={TabNavigator}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Notification"
+          component={NotificationScreen}
+          options={{
+            title: "Notification",
+            headerStyle: { backgroundColor: "#FFF" },
+            headerTitleStyle: { fontWeight: "600", fontSize: 18 },
+            headerTintColor: "#111827",
+            headerShadowVisible: false,
+            headerBackTitleVisible: false,
+          }}
+        />
+        <Stack.Screen
+          name="JobDetail"
+          component={JobDetailScreen}
+          options={{
+            title: "Job Detail",
+            headerStyle: { backgroundColor: "#FFF" },
+            headerTitleStyle: { fontWeight: "600", fontSize: 18 },
+            headerTintColor: "#111827",
+            headerShadowVisible: false,
+            headerBackTitleVisible: false,
+          }}
         />
       </Stack.Navigator>
     );

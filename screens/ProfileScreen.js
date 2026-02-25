@@ -33,6 +33,13 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.notificationIcon}
+        onPress={() => navigation.navigate("Notification")}
+      >
+        <Ionicons name="notifications-outline" size={24} color="#000" />
+        <View style={styles.notificationBadge} />
+      </TouchableOpacity>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
@@ -106,6 +113,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFF",
     paddingTop: 40,
+  },
+  notificationIcon: {
+    position: "absolute",
+    top: 48,
+    right: 20,
+    zIndex: 10,
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  notificationBadge: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#EF4444",
   },
   scroll: {
     flex: 1,

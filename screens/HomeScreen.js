@@ -31,7 +31,6 @@ export default function HomeScreen({ navigation }) {
         { text: "Escrow Secured", color: "#10B981", icon: "checkmark" },
         { text: "Urgent", color: "#F3F4F6", textColor: "#6B7280" },
       ],
-      action: "View Details",
     },
     {
       id: 2,
@@ -46,7 +45,6 @@ export default function HomeScreen({ navigation }) {
         { text: "Direct Hire", color: AIR_BLUE, icon: "diamond-outline" },
         { text: "Full-time", color: "#FFF", textColor: "#6B7280" },
       ],
-      action: "Apply Now",
     },
     {
       id: 3,
@@ -61,7 +59,6 @@ export default function HomeScreen({ navigation }) {
         { text: "Escrow Secured", color: "#10B981", icon: "checkmark" },
         { text: "1 week", color: "#F3F4F6", textColor: "#6B7280" },
       ],
-      action: "View Details",
     },
   ];
 
@@ -77,10 +74,6 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.brandText}>FAF</Text>
           </View>
           <View style={styles.topRightIcons}>
-            <TouchableOpacity style={styles.iconButton}>
-              <Ionicons name="notifications-outline" size={24} color="#000" />
-              <View style={styles.notificationBadge} />
-            </TouchableOpacity>
             <TouchableOpacity style={styles.profileButton}>
               <Ionicons name="person" size={20} color="#FFF" />
             </TouchableOpacity>
@@ -169,7 +162,12 @@ export default function HomeScreen({ navigation }) {
         {/* Job Cards */}
         <View style={styles.jobsContainer}>
           {jobs.map((job) => (
-            <View key={job.id} style={styles.jobCard}>
+            <TouchableOpacity
+              key={job.id}
+              style={styles.jobCard}
+              onPress={() => navigation.navigate("JobDetail", { job })}
+              activeOpacity={0.85}
+            >
               <View style={styles.jobCardHeader}>
                 <View
                   style={[styles.jobIcon, { backgroundColor: job.iconColor }]}
@@ -215,10 +213,7 @@ export default function HomeScreen({ navigation }) {
                   </View>
                 ))}
               </View>
-              <TouchableOpacity style={styles.jobActionButton}>
-                <Text style={styles.jobActionText}>{job.action}</Text>
-              </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
 
@@ -283,22 +278,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-  },
-  iconButton: {
-    position: "relative",
-    width: 40,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  notificationBadge: {
-    position: "absolute",
-    top: 8,
-    right: 8,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "#EF4444",
   },
   profileButton: {
     width: 40,
@@ -490,14 +469,6 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 12,
     fontWeight: "600",
-  },
-  jobActionButton: {
-    paddingVertical: 8,
-  },
-  jobActionText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#6B7280",
   },
   verifySection: {
     marginHorizontal: 20,

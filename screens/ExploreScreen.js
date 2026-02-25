@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import SearchBar from "../components/SearchBar";
 
@@ -36,8 +37,6 @@ const JOBS = [
     amountLabel: "PAY AMOUNT",
     amount: "$150 / flat",
     amountIcon: null,
-    buttonText: "Quick Apply →",
-    buttonPrimary: true,
   },
   {
     id: 2,
@@ -58,8 +57,6 @@ const JOBS = [
     amount: "500 Pts",
     amountIcon: "diamond",
     amountIconColor: "#F97316",
-    buttonText: "Quick Apply",
-    buttonPrimary: true,
   },
   {
     id: 3,
@@ -76,13 +73,12 @@ const JOBS = [
     amountLabel: "SALARY",
     amount: "$45k / yr",
     amountIcon: null,
-    buttonText: "View Details",
-    buttonPrimary: false,
   },
 ];
 
 export default function ExploreScreen() {
   const [jobType, setJobType] = useState("Short-term");
+  const navigation = useNavigation();
 
   return (
     <View style={styles.safeArea}>
@@ -173,7 +169,12 @@ export default function ExploreScreen() {
         {/* Job cards */}
         <View style={styles.jobsList}>
           {JOBS.map((job) => (
-            <View key={job.id} style={styles.jobCard}>
+            <TouchableOpacity
+              key={job.id}
+              style={styles.jobCard}
+              onPress={() => navigation.navigate("JobDetail", { job })}
+              activeOpacity={1}
+            >
               <View style={styles.jobCardTop}>
                 <View
                   style={[styles.jobIconWrap, { backgroundColor: job.iconBg }]}
@@ -236,23 +237,8 @@ export default function ExploreScreen() {
                     <Text style={styles.amountValue}>{job.amount}</Text>
                   </View>
                 </View>
-                <TouchableOpacity
-                  style={[
-                    styles.actionBtn,
-                    job.buttonPrimary && styles.actionBtnPrimary,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.actionBtnText,
-                      job.buttonPrimary && styles.actionBtnTextPrimary,
-                    ]}
-                  >
-                    {job.buttonText}
-                  </Text>
-                </TouchableOpacity>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       </ScrollView>
@@ -460,22 +446,5 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
     color: "#111827",
-  },
-  actionBtn: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 10,
-    backgroundColor: "#E5E7EB",
-  },
-  actionBtnPrimary: {
-    backgroundColor: PRIMARY_BLUE,
-  },
-  actionBtnText: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: GRAY_TEXT,
-  },
-  actionBtnTextPrimary: {
-    color: "#FFF",
   },
 });
