@@ -73,11 +73,6 @@ export default function HomeScreen({ navigation }) {
             </View>
             <Text style={styles.brandText}>FAF</Text>
           </View>
-          <View style={styles.topRightIcons}>
-            <TouchableOpacity style={styles.profileButton}>
-              <Ionicons name="person" size={20} color="#FFF" />
-            </TouchableOpacity>
-          </View>
         </View>
 
         {/* Hero Section */}
@@ -273,19 +268,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "800",
     color: "#000",
-  },
-  topRightIcons: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  profileButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#D97706",
-    alignItems: "center",
-    justifyContent: "center",
   },
   heroSection: {
     paddingHorizontal: 20,

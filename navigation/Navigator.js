@@ -2,15 +2,17 @@ import { FontAwesome } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import LoginScreen from "../screens/LoginScreen";
-import RegisterScreen from "../screens/RegisterScreen";
+import LoginScreen from "../screens/auth/LoginScreen";
+import RegisterScreen from "../screens/auth/RegisterScreen";
 import MainScreen from "../screens/MainScreen";
-import HomeScreen from "../screens/HomeScreen";
-import ExploreScreen from "../screens/ExploreScreen";
-import MessageScreen from "../screens/MessageScreen";
-import ProfileScreen from "../screens/ProfileScreen";
-import NotificationScreen from "../screens/NotificationScreen";
-import JobDetailScreen from "../screens/JobDetailScreen";
+import HomeScreen from "../screens/worker/HomeScreen";
+import ExploreScreen from "../screens/worker/ExploreScreen";
+import MessageScreen from "../screens/worker/MessageScreen";
+import ProfileScreen from "../screens/worker/ProfileScreen";
+import NotificationScreen from "../screens/worker/NotificationScreen";
+import JobDetailScreen from "../screens/worker/JobDetailScreen";
+import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
+import OTPScreen from "../screens/auth/OTPScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -32,6 +34,16 @@ export default function Navigator() {
         <Stack.Screen
           name="Login"
           component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPasswordScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="OTP"
+          component={OTPScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen

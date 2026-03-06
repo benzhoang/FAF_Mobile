@@ -7,7 +7,7 @@ const AIR_SKY = "#E0F2FE";
 const GRAY_BORDER = "#E5E7EB";
 const GRAY_TEXT = "#6B7280";
 
-export default function MainScreen({ navigation }) {
+export default function MainScreen() {
   const navigate = useNavigation();
   const navigateToLogin = () => {
     navigate.navigate("Login");
@@ -28,7 +28,7 @@ export default function MainScreen({ navigation }) {
               resizeMode="contain"
             />
             <Text style={styles.welcomeSubtitle}>
-              Connecting talent with purpose.
+              Kết nối tài năng với mục đích.
             </Text>
           </View>
 
@@ -39,7 +39,7 @@ export default function MainScreen({ navigation }) {
               style={styles.signInButton}
               onPress={navigateToLogin}
             >
-              <Text style={styles.signInButtonText}>Sign In</Text>
+              <Text style={styles.signInButtonText}>Đăng nhập</Text>
             </TouchableOpacity>
 
             {/* Create Account Button */}
@@ -47,7 +47,7 @@ export default function MainScreen({ navigation }) {
               style={styles.createAccountButton}
               onPress={navigateToRegister}
             >
-              <Text style={styles.createAccountButtonText}>Sign Up</Text>
+              <Text style={styles.createAccountButtonText}>Đăng ký</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -45,19 +45,19 @@ export default function LoginScreen({ navigation }) {
 
     // Validate inputs
     if (!email.trim()) {
-      setErrorMessage("Please enter your email address");
+      setErrorMessage("Vui lòng nhập địa chỉ email của bạn");
       return;
     }
 
     if (!password.trim()) {
-      setErrorMessage("Please enter your password");
+      setErrorMessage("Vui lòng nhập mật khẩu");
       return;
     }
 
     // Check email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
-      setErrorMessage("Please enter a valid email address");
+      setErrorMessage("Vui lòng nhập địa chỉ email hợp lệ");
       return;
     }
 
@@ -70,15 +70,15 @@ export default function LoginScreen({ navigation }) {
 
     if (user) {
       setAlertConfig({
-        title: "Success",
-        message: "Sign in successful!",
+        title: "Thành công",
+        message: "Đăng nhập thành công!",
         type: "success",
       });
       setAlertVisible(true);
     } else {
       setAlertConfig({
-        title: "Error",
-        message: "Invalid email or password. Please try again.",
+        title: "Lỗi",
+        message: "Email hoặc mật khẩu không đúng. Vui lòng thử lại.",
         type: "error",
       });
       setAlertVisible(true);
@@ -148,14 +148,14 @@ export default function LoginScreen({ navigation }) {
           {/* Logo and Header */}
           <View style={styles.headerContainer}>
             <Image
-              source={require("../assets/logo.png")}
+              source={require("../../assets/logo.png")}
               style={styles.logoImage}
               resizeMode="contain"
             />
 
-            <Text style={styles.welcomeTitle}>Welcome Back</Text>
+            <Text style={styles.welcomeTitle}>Chào mừng trở lại</Text>
             <Text style={styles.welcomeSubtitle}>
-              Enter your details to access your candidate dashboard.
+              Nhập thông tin để truy cập bảng điều khiển của bạn.
             </Text>
           </View>
 
@@ -166,7 +166,7 @@ export default function LoginScreen({ navigation }) {
               <View style={styles.inputFieldContainer}>
                 <TextInput
                   style={styles.inputField}
-                  placeholder="Email Address"
+                  placeholder="Địa chỉ email"
                   placeholderTextColor={GRAY_TEXT}
                   value={email}
                   onChangeText={setEmail}
@@ -188,7 +188,7 @@ export default function LoginScreen({ navigation }) {
               <View style={styles.inputFieldContainer}>
                 <TextInput
                   style={styles.inputField}
-                  placeholder="Password"
+                  placeholder="Mật khẩu"
                   placeholderTextColor={GRAY_TEXT}
                   value={password}
                   onChangeText={setPassword}
@@ -220,10 +220,12 @@ export default function LoginScreen({ navigation }) {
                     <Ionicons name="checkmark" size={16} color={AIR_BLUE} />
                   )}
                 </View>
-                <Text style={styles.rememberMeText}>Remember me</Text>
+                <Text style={styles.rememberMeText}>Ghi nhớ đăng nhập</Text>
               </TouchableOpacity>
-              <TouchableOpacity>
-                <Text style={styles.forgotPasswordText}>Forgot password?</Text>
+              <TouchableOpacity
+                onPress={() => navigation?.navigate("ForgotPassword")}
+              >
+                <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
               </TouchableOpacity>
             </View>
 
@@ -237,13 +239,13 @@ export default function LoginScreen({ navigation }) {
 
           {/* Sign In Button */}
           <TouchableOpacity style={styles.signInButton} onPress={handleLogin}>
-            <Text style={styles.signInButtonText}>Sign in</Text>
+            <Text style={styles.signInButtonText}>Đăng nhập</Text>
           </TouchableOpacity>
 
           {/* Divider */}
           <View style={styles.dividerContainer}>
             <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>OR CONTINUE WITH</Text>
+            <Text style={styles.dividerText}>HOẶC TIẾP TỤC VỚI</Text>
             <View style={styles.dividerLine} />
           </View>
 
@@ -264,11 +266,11 @@ export default function LoginScreen({ navigation }) {
           {/* Footer */}
           <View style={styles.footerContainer}>
             <View style={styles.footerTextContainer}>
-              <Text style={styles.footerText}>Don't have an account? </Text>
+              <Text style={styles.footerText}>Chưa có tài khoản? </Text>
               <TouchableOpacity
                 onPress={() => navigation?.navigate("Register")}
               >
-                <Text style={styles.footerLink}>Create account</Text>
+                <Text style={styles.footerLink}>Tạo tài khoản</Text>
               </TouchableOpacity>
             </View>
           </View>

@@ -47,14 +47,14 @@ export default function RegisterScreen({ navigation }) {
           {/* Logo and Header */}
           <View style={styles.headerContainer}>
             <Image
-              source={require("../assets/logo.png")}
+              source={require("../../assets/logo.png")}
               style={styles.logoImage}
               resizeMode="contain"
             />
-            <Text style={styles.welcomeTitle}>Create your account</Text>
+            <Text style={styles.welcomeTitle}>Tạo tài khoản của bạn</Text>
             <View style={styles.subtitleContainer}>
               <Text style={styles.welcomeSubtitle}>
-                Join the future of work.{" "}
+                Tham gia tương lai của công việc.{" "}
               </Text>
             </View>
           </View>
@@ -66,7 +66,7 @@ export default function RegisterScreen({ navigation }) {
               <View style={styles.inputFieldContainer}>
                 <TextInput
                   style={styles.inputField}
-                  placeholder="Full Name"
+                  placeholder="Họ và tên"
                   placeholderTextColor={GRAY_TEXT}
                   value={fullName}
                   onChangeText={setFullName}
@@ -86,7 +86,7 @@ export default function RegisterScreen({ navigation }) {
               <View style={styles.inputFieldContainer}>
                 <TextInput
                   style={styles.inputField}
-                  placeholder="Email Address"
+                  placeholder="Địa chỉ email"
                   placeholderTextColor={GRAY_TEXT}
                   value={email}
                   onChangeText={setEmail}
@@ -108,7 +108,7 @@ export default function RegisterScreen({ navigation }) {
               <View style={styles.inputFieldContainer}>
                 <TextInput
                   style={styles.inputField}
-                  placeholder="Password"
+                  placeholder="Mật khẩu"
                   placeholderTextColor={GRAY_TEXT}
                   value={password}
                   onChangeText={setPassword}
@@ -134,7 +134,7 @@ export default function RegisterScreen({ navigation }) {
               <View style={styles.inputFieldContainer}>
                 <TextInput
                   style={styles.inputField}
-                  placeholder="Confirm Password"
+                  placeholder="Xác nhận mật khẩu"
                   placeholderTextColor={GRAY_TEXT}
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
@@ -171,13 +171,13 @@ export default function RegisterScreen({ navigation }) {
               </View>
             </TouchableOpacity>
             <View style={styles.termsTextContainer}>
-              <Text style={styles.termsText}>I agree to the </Text>
+              <Text style={styles.termsText}>Tôi đồng ý với </Text>
               <TouchableOpacity>
-                <Text style={styles.termsLink}>Terms</Text>
+                <Text style={styles.termsLink}>Điều khoản</Text>
               </TouchableOpacity>
-              <Text style={styles.termsText}> and </Text>
+              <Text style={styles.termsText}> và </Text>
               <TouchableOpacity>
-                <Text style={styles.termsLink}>Privacy</Text>
+                <Text style={styles.termsLink}>Quyền riêng tư</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -185,15 +185,15 @@ export default function RegisterScreen({ navigation }) {
           {/* Create Account Button */}
           <TouchableOpacity
             style={styles.createAccountButton}
-            onPress={() => navigation?.navigate("Login")}
+            onPress={() => navigation?.navigate("OTP")}
           >
-            <Text style={styles.createAccountButtonText}>Create Account</Text>
+            <Text style={styles.createAccountButtonText}>Tạo tài khoản</Text>
           </TouchableOpacity>
 
           {/* Divider */}
           <View style={styles.dividerContainer}>
             <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>OR CONTINUE WITH</Text>
+            <Text style={styles.dividerText}>HOẶC TIẾP TỤC VỚI</Text>
             <View style={styles.dividerLine} />
           </View>
 
@@ -214,10 +214,10 @@ export default function RegisterScreen({ navigation }) {
           {/* Already have account link */}
           <View style={styles.loginLinkContainer}>
             <Text style={styles.welcomeSubtitle}>
-              Already have an account?{" "}
+              Đã có tài khoản?{" "}
             </Text>
             <TouchableOpacity onPress={() => navigation?.navigate("Login")}>
-              <Text style={styles.loginLink}>Log in</Text>
+              <Text style={styles.loginLink}>Đăng nhập</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

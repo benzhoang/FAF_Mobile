@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import SearchBar from "../components/SearchBar";
+import SearchBar from "../../components/SearchBar";
 
 const PRIMARY_BLUE = "#1E90FF";
 const GRAY_TEXT = "#6B7280";
