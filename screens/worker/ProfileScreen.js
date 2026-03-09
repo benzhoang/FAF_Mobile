@@ -7,6 +7,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 
 const PRIMARY_BLUE = "#1E90FF";
@@ -16,7 +17,9 @@ const GRAY_LIGHT = "#9CA3AF";
 export default function ProfileScreen() {
   const navigation = useNavigation();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem("token");
+    console.log("Token removed successfully");
     navigation.reset({
       index: 0,
       routes: [{ name: "Main" }],

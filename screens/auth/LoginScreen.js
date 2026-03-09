@@ -11,20 +11,15 @@ import {
   Image,
   Modal,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { login } from "../../service/api";
 
 const AIR_BLUE = "#0EA5E9";
 const GRAY_TEXT = "#6B7280";
 const GRAY_BORDER = "#E5E7EB";
-
-// Mock user data
-const MOCK_USERS = [
-  {
-    email: "worker@gmail.com",
-    password: "123456",
-  },
-];
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -32,6 +27,7 @@ export default function LoginScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertConfig, setAlertConfig] = useState({
     title: "",
@@ -39,11 +35,9 @@ export default function LoginScreen({ navigation }) {
     type: "success", // 'success' | 'error'
   });
 
-  const handleLogin = () => {
-    // Reset error message
+  const handleLogin = async () => {
     setErrorMessage("");
 
-    // Validate inputs
     if (!email.trim()) {
       setErrorMessage("Vui lòng nhập địa chỉ email của bạn");
       return;
@@ -54,34 +48,45 @@ export default function LoginScreen({ navigation }) {
       return;
     }
 
-    // Check email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
       setErrorMessage("Vui lòng nhập địa chỉ email hợp lệ");
       return;
     }
 
-    // Check against mock users
-    const user = MOCK_USERS.find(
-      (u) =>
-        u.email.toLowerCase() === email.trim().toLowerCase() &&
-        u.password === password,
-    );
+    setLoading(true);
+    try {
+      const result = await login(email.trim(), password);
 
-    if (user) {
-      setAlertConfig({
-        title: "Thành công",
-        message: "Đăng nhập thành công!",
-        type: "success",
-      });
-      setAlertVisible(true);
-    } else {
+      if (result.success) {
+        if (result.data?.accessToken) {
+          await AsyncStorage.setItem("token", result.data.accessToken);
+          console.log("Token đã được lưu:", result.data.accessToken);
+        }
+
+        setAlertConfig({
+          title: "Thành công",
+          message: "Đăng nhập thành công!",
+          type: "success",
+        });
+        setAlertVisible(true);
+      } else {
+        setAlertConfig({
+          title: "Lỗi",
+          message: "Email hoặc mật khẩu không đúng. Vui lòng thử lại.",
+          type: "error",
+        });
+        setAlertVisible(true);
+      }
+    } catch (err) {
       setAlertConfig({
         title: "Lỗi",
-        message: "Email hoặc mật khẩu không đúng. Vui lòng thử lại.",
+        message: "Đăng nhập thất bại. Vui lòng thử lại.",
         type: "error",
       });
       setAlertVisible(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -168,8 +173,8 @@ export default function LoginScreen({ navigation }) {
                   style={styles.inputField}
                   placeholder="Địa chỉ email"
                   placeholderTextColor={GRAY_TEXT}
-                  value={email}
-                  onChangeText={setEmail}
+                  value={email.trim()}
+                  onChangeText={(text) => setEmail(text.trim())}
                   keyboardType="email-address"
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -238,8 +243,19 @@ export default function LoginScreen({ navigation }) {
           </View>
 
           {/* Sign In Button */}
-          <TouchableOpacity style={styles.signInButton} onPress={handleLogin}>
-            <Text style={styles.signInButtonText}>Đăng nhập</Text>
+          <TouchableOpacity
+            style={[
+              styles.signInButton,
+              loading && styles.signInButtonDisabled,
+            ]}
+            onPress={handleLogin}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#FFF" />
+            ) : (
+              <Text style={styles.signInButtonText}>Đăng nhập</Text>
+            )}
           </TouchableOpacity>
 
           {/* Divider */}
@@ -440,6 +456,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     marginRight: 8,
+  },
+  signInButtonDisabled: {
+    opacity: 0.7,
   },
   dividerContainer: {
     flexDirection: "row",
