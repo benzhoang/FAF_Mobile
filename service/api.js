@@ -3,7 +3,7 @@ import { Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Dùng URL deploy thực tế trên Railway
-const API_BASE_URL = "https://fafbe-production.up.railway.app/api";
+const API_BASE_URL = "https://fafbe-productionf.up.railway.app/api";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -33,22 +33,27 @@ const handleResponse = (response) => {
   // Format 1: { code: 0, data: [...] }
   // Format 2: { data: [...] }
   // Format 3: [...] (direct array or object)
-  
-  if (data && typeof data === 'object') {
-    if ('data' in data) return { success: true, data: data.data };
-    if ('code' in data && data.code === 0) return { success: true, data: data.data || data };
+
+  if (data && typeof data === "object") {
+    if ("data" in data) return { success: true, data: data.data };
+    if ("code" in data && data.code === 0)
+      return { success: true, data: data.data || data };
     return { success: true, data: data };
   }
   return { success: true, data: data };
 };
 
 const handleError = (error, defaultMsg) => {
-  const serverError = error.response?.data?.error || 
-                    error.response?.data?.message || 
-                    error.response?.data?.errorMessage;
-  
-  console.error(`API Error [${defaultMsg}]:`, error.response?.data || error.message);
-  
+  const serverError =
+    error.response?.data?.error ||
+    error.response?.data?.message ||
+    error.response?.data?.errorMessage;
+
+  console.error(
+    `API Error [${defaultMsg}]:`,
+    error.response?.data || error.message,
+  );
+
   return {
     success: false,
     error: serverError || error.message || defaultMsg,
@@ -76,7 +81,12 @@ export const updateUserProfile = async (data) => {
 
 export const register = async (email, password, role, fullName) => {
   try {
-    const response = await api.post("/auth/register", { email, password, role, fullName });
+    const response = await api.post("/auth/register", {
+      email,
+      password,
+      role,
+      fullName,
+    });
     return handleResponse(response);
   } catch (error) {
     return handleError(error, "Đăng ký thất bại");
@@ -250,7 +260,9 @@ export const startChat = async (otherUserId) => {
 
 export const sendChatMessage = async (conversationId, content) => {
   try {
-    const response = await api.post(`/chat/${conversationId}/messages`, { content });
+    const response = await api.post(`/chat/${conversationId}/messages`, {
+      content,
+    });
     return handleResponse(response);
   } catch (error) {
     return handleError(error, "Gửi tin nhắn thất bại");
@@ -259,7 +271,10 @@ export const sendChatMessage = async (conversationId, content) => {
 
 export const requestWithdrawal = async (amount, bankInfo) => {
   try {
-    const response = await api.post("/wallets/withdraw/request", { amount, bank_info: bankInfo });
+    const response = await api.post("/wallets/withdraw/request", {
+      amount,
+      bank_info: bankInfo,
+    });
     return handleResponse(response);
   } catch (error) {
     return handleError(error, "Yêu cầu rút tiền thất bại");
@@ -277,7 +292,10 @@ export const getMyWithdrawals = async () => {
 
 export const changePassword = async (oldPassword, newPassword) => {
   try {
-    const res = await api.post("/auth/change-password", { oldPassword, newPassword });
+    const res = await api.post("/auth/change-password", {
+      oldPassword,
+      newPassword,
+    });
     return { success: true, data: res.data };
   } catch (err) {
     return { success: false, error: err.response?.data?.error || err.message };
@@ -295,7 +313,11 @@ export const forgotPassword = async (email) => {
 
 export const resetPassword = async (email, otp, newPassword) => {
   try {
-    const res = await api.post("/auth/reset-password", { email, otp, newPassword });
+    const res = await api.post("/auth/reset-password", {
+      email,
+      otp,
+      newPassword,
+    });
     return { success: true, data: res.data };
   } catch (err) {
     return { success: false, error: err.response?.data?.error || err.message };
@@ -318,7 +340,10 @@ export const getMyTransactions = async () => {
 
 export const depositZaloPay = async (amount, redirecturl) => {
   try {
-    const response = await api.post("/wallets/deposit/zalopay", { amount, redirecturl });
+    const response = await api.post("/wallets/deposit/zalopay", {
+      amount,
+      redirecturl,
+    });
     return handleResponse(response);
   } catch (error) {
     return handleError(error, "Khởi tạo thanh toán ZaloPay thất bại");
@@ -327,7 +352,10 @@ export const depositZaloPay = async (amount, redirecturl) => {
 
 export const depositMoMo = async (amount, redirectUrl) => {
   try {
-    const response = await api.post("/wallets/deposit/momo", { amount, redirectUrl });
+    const response = await api.post("/wallets/deposit/momo", {
+      amount,
+      redirectUrl,
+    });
     return handleResponse(response);
   } catch (error) {
     return handleError(error, "Khởi tạo thanh toán MoMo thất bại");
@@ -336,9 +364,10 @@ export const depositMoMo = async (amount, redirectUrl) => {
 
 export const checkPaymentStatus = async (paymentId, method) => {
   try {
-    const endpoint = method === "zalopay" 
-      ? `/wallets/check-status/zalopay/${paymentId}` 
-      : `/wallets/check-status/momo/${paymentId}`;
+    const endpoint =
+      method === "zalopay"
+        ? `/wallets/check-status/zalopay/${paymentId}`
+        : `/wallets/check-status/momo/${paymentId}`;
     const response = await api.get(endpoint);
     return handleResponse(response);
   } catch (error) {
@@ -377,7 +406,10 @@ export const signContract = async (contractId, otp) => {
 
 export const submitCheckpoint = async (checkpointId, workData) => {
   try {
-    const response = await api.put(`/contracts/checkpoints/${checkpointId}/submit`, workData);
+    const response = await api.put(
+      `/contracts/checkpoints/${checkpointId}/submit`,
+      workData,
+    );
     return handleResponse(response);
   } catch (error) {
     return handleError(error, "Nộp bài làm thất bại");
