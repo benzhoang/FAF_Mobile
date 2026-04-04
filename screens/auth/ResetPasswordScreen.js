@@ -55,10 +55,12 @@ export default function ResetPasswordScreen({ route, navigation }) {
         ]);
       } else {
         let errorMsg = "Không thể đặt lại mật khẩu. Vui lòng thử lại.";
-        if (res.error === "OTP invalid") errorMsg = "Mã OTP không hợp lệ hoặc đã hết hạn.";
-        else if (res.error === "OTP wrong") errorMsg = "Mã OTP không chính xác.";
+        if (res.error === "OTP invalid")
+          errorMsg = "Mã OTP không hợp lệ hoặc đã hết hạn.";
+        else if (res.error === "OTP wrong")
+          errorMsg = "Mã OTP không chính xác.";
         else if (res.error) errorMsg = res.error;
-        
+
         Alert.alert("Lỗi", errorMsg);
       }
     } catch (err) {
@@ -84,99 +86,103 @@ export default function ResetPasswordScreen({ route, navigation }) {
 
           <View style={styles.header}>
             <View style={styles.iconCircle}>
-              <Ionicons name="lock-open-outline" size={40} color={CYAN_ACCENT} />
+              <Ionicons
+                name="lock-open-outline"
+                size={40}
+                color={CYAN_ACCENT}
+              />
             </View>
             <Text style={styles.title}>Đặt lại mật khẩu</Text>
             <Text style={styles.subtitle}>
               Mã xác thực đã được gửi tới:{"\n"}
-              <Text style={{ color: CYAN_ACCENT, fontWeight: "600" }}>{email}</Text>
+              <Text style={{ color: CYAN_ACCENT, fontWeight: "600" }}>
+                {email}
+              </Text>
             </Text>
           </View>
 
-          <View style={styles.form}>
-            {/* OTP Input */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Mã xác thực (OTP)</Text>
-              <View style={styles.inputField}>
-                <Ionicons
-                  name="keypad-outline"
-                  size={20}
-                  color={TEXT_MUTED}
-                  style={styles.inputIcon}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Nhập 6 số"
-                  placeholderTextColor={TEXT_MUTED}
-                  keyboardType="number-pad"
-                  maxLength={6}
-                  value={otp}
-                  onChangeText={setOtp}
-                />
-              </View>
+          {/* OTP Input */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Mã xác thực (OTP)</Text>
+            <View style={styles.inputField}>
+              <Ionicons
+                name="keypad-outline"
+                size={20}
+                color={TEXT_MUTED}
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Nhập 6 số"
+                placeholderTextColor={TEXT_MUTED}
+                keyboardType="number-pad"
+                maxLength={6}
+                value={otp}
+                onChangeText={setOtp}
+              />
             </View>
-
-            {/* New Password Input */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Mật khẩu mới</Text>
-              <View style={styles.inputField}>
-                <Ionicons
-                  name="lock-closed-outline"
-                  size={20}
-                  color={TEXT_MUTED}
-                  style={styles.inputIcon}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Tối thiểu 6 ký tự"
-                  placeholderTextColor={TEXT_MUTED}
-                  secureTextEntry={!showPassword}
-                  value={newPassword}
-                  onChangeText={setNewPassword}
-                />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                  <Ionicons
-                    name={showPassword ? "eye-off-outline" : "eye-outline"}
-                    size={20}
-                    color={TEXT_MUTED}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {/* Confirm Password Input */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Xác nhận mật khẩu</Text>
-              <View style={styles.inputField}>
-                <Ionicons
-                  name="shield-checkmark-outline"
-                  size={20}
-                  color={TEXT_MUTED}
-                  style={styles.inputIcon}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Nhập lại mật khẩu"
-                  placeholderTextColor={TEXT_MUTED}
-                  secureTextEntry={!showPassword}
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                />
-              </View>
-            </View>
-
-            <TouchableOpacity
-              style={[styles.button, loading && styles.buttonDisabled]}
-              onPress={handleResetPassword}
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator color="#FFF" />
-              ) : (
-                <Text style={styles.buttonText}>Đổi mật khẩu</Text>
-              )}
-            </TouchableOpacity>
           </View>
+
+          {/* New Password Input */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Mật khẩu mới</Text>
+            <View style={styles.inputField}>
+              <Ionicons
+                name="lock-closed-outline"
+                size={20}
+                color={TEXT_MUTED}
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Tối thiểu 6 ký tự"
+                placeholderTextColor={TEXT_MUTED}
+                secureTextEntry={!showPassword}
+                value={newPassword}
+                onChangeText={setNewPassword}
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <Ionicons
+                  name={showPassword ? "eye-off-outline" : "eye-outline"}
+                  size={20}
+                  color={TEXT_MUTED}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Confirm Password Input */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Xác nhận mật khẩu</Text>
+            <View style={styles.inputField}>
+              <Ionicons
+                name="shield-checkmark-outline"
+                size={20}
+                color={TEXT_MUTED}
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Nhập lại mật khẩu"
+                placeholderTextColor={TEXT_MUTED}
+                secureTextEntry={!showPassword}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+            </View>
+          </View>
+
+          <TouchableOpacity
+            style={[styles.button, loading && styles.buttonDisabled]}
+            onPress={handleResetPassword}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#FFF" />
+            ) : (
+              <Text style={styles.buttonText}>Đổi mật khẩu</Text>
+            )}
+          </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -231,14 +237,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 22,
     paddingHorizontal: 10,
-  },
-  form: {
-    backgroundColor: BG_SURFACE,
-    padding: 24,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: "#1e293b",
-    marginBottom: 20,
   },
   inputGroup: {
     marginBottom: 20,

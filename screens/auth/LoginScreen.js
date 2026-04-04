@@ -71,7 +71,7 @@ export default function LoginScreen({ navigation }) {
 
         // Kiểm tra vai trò người dùng sau khi đăng nhập thành công
         const profileRes = await getCurrentUserProfile();
-        
+
         if (profileRes.success && profileRes.data?.role === "worker") {
           setAlertConfig({
             title: "THÀNH CÔNG",
@@ -84,7 +84,7 @@ export default function LoginScreen({ navigation }) {
           await AsyncStorage.removeItem("token");
           setAlertConfig({
             title: "TRUY CẬP BỊ TỪ CHỐI",
-            message: profileRes.success 
+            message: profileRes.success
               ? "Ứng dụng Mobile chỉ dành cho Người làm việc (Worker). Các vai trò khác vui lòng sử dụng bản Web."
               : "Không thể xác minh thông tin người dùng. Vui lòng thử lại.",
             type: "error",
@@ -93,9 +93,13 @@ export default function LoginScreen({ navigation }) {
         }
       } else {
         let errorMsg = "Email hoặc mật khẩu không đúng.";
-        if (result.error === "User not found") errorMsg = "Email không tồn tại trong hệ thống.";
-        else if (result.error === "Account not activated") errorMsg = "Tài khoản của bạn chưa được kích hoạt. Vui lòng kiểm tra email.";
-        else if (result.error === "Wrong password") errorMsg = "Mật khẩu không chính xác.";
+        if (result.error === "User not found")
+          errorMsg = "Email không tồn tại trong hệ thống.";
+        else if (result.error === "Account not activated")
+          errorMsg =
+            "Tài khoản của bạn chưa được kích hoạt. Vui lòng kiểm tra email.";
+        else if (result.error === "Wrong password")
+          errorMsg = "Mật khẩu không chính xác.";
         else if (result.error) errorMsg = result.error;
 
         setAlertConfig({
@@ -143,17 +147,37 @@ export default function LoginScreen({ navigation }) {
             style={styles.alertDialog}
             onPress={(e) => e.stopPropagation()}
           >
-            <View style={[styles.alertIconWrap, { backgroundColor: alertConfig.type === 'success' ? EMERALD + '20' : ROSE + '20' }]}>
-               <Ionicons 
-                name={alertConfig.type === 'success' ? "checkmark-circle" : "alert-circle"} 
-                size={40} 
-                color={alertConfig.type === 'success' ? EMERALD : ROSE} 
-               />
+            <View
+              style={[
+                styles.alertIconWrap,
+                {
+                  backgroundColor:
+                    alertConfig.type === "success"
+                      ? EMERALD + "20"
+                      : ROSE + "20",
+                },
+              ]}
+            >
+              <Ionicons
+                name={
+                  alertConfig.type === "success"
+                    ? "checkmark-circle"
+                    : "alert-circle"
+                }
+                size={40}
+                color={alertConfig.type === "success" ? EMERALD : ROSE}
+              />
             </View>
             <Text style={styles.alertTitle}>{alertConfig.title}</Text>
             <Text style={styles.alertMessage}>{alertConfig.message}</Text>
             <TouchableOpacity
-              style={[styles.alertOKButton, { backgroundColor: alertConfig.type === 'success' ? EMERALD : ROSE }]}
+              style={[
+                styles.alertOKButton,
+                {
+                  backgroundColor:
+                    alertConfig.type === "success" ? EMERALD : ROSE,
+                },
+              ]}
               onPress={handleAlertOK}
               activeOpacity={0.8}
             >
@@ -184,9 +208,12 @@ export default function LoginScreen({ navigation }) {
               style={styles.logoImage}
               resizeMode="contain"
             />
-            <Text style={styles.welcomeTitle}>LOGIN<Text style={{color: CYAN_ACCENT}}>_PORTAL</Text></Text>
+            <Text style={styles.welcomeTitle}>
+              Đăng <Text style={{ color: CYAN_ACCENT }}>nhập</Text>
+            </Text>
             <Text style={styles.welcomeSubtitle}>
-              Nhập mã định danh để truy cập vào hệ thống <Text style={{color: "#FFF"}}>FAF</Text>.
+              Nhập mã định danh để truy cập vào hệ thống{" "}
+              <Text style={{ color: "#FFF" }}>FAF</Text>.
             </Text>
           </View>
 
@@ -248,7 +275,9 @@ export default function LoginScreen({ navigation }) {
                 style={styles.rememberMeContainer}
                 onPress={() => setRememberMe(!rememberMe)}
               >
-                <View style={[styles.checkbox, rememberMe && styles.checkboxActive]}>
+                <View
+                  style={[styles.checkbox, rememberMe && styles.checkboxActive]}
+                >
                   {rememberMe && (
                     <Ionicons name="checkmark" size={14} color="#FFF" />
                   )}
@@ -285,12 +314,9 @@ export default function LoginScreen({ navigation }) {
             )}
           </TouchableOpacity>
 
-
           <View style={styles.footerContainer}>
             <Text style={styles.footerText}>Chưa có tài khoản hê thống? </Text>
-            <TouchableOpacity
-              onPress={() => navigation?.navigate("Register")}
-            >
+            <TouchableOpacity onPress={() => navigation?.navigate("Register")}>
               <Text style={styles.footerLink}>Đăng ký ngay</Text>
             </TouchableOpacity>
           </View>
@@ -496,7 +522,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 50,
   },
   footerText: {
     fontSize: 14,

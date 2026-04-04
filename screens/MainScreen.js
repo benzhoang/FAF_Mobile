@@ -1,16 +1,16 @@
 import React, { useEffect, useRef } from "react";
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Image, 
-  Dimensions, 
-  Animated, 
-  Platform 
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Dimensions,
+  Animated,
+  Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient } from "expo-linear-gradient";
 
 const { width, height } = Dimensions.get("window");
 
@@ -28,10 +28,10 @@ const TEXT_SECONDARY = "#94a3b8";
 const Particle = ({ delay }) => {
   const moveAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
-  
+
   const startPos = {
     x: Math.random() * width,
-    y: Math.random() * height
+    y: Math.random() * height,
   };
 
   useEffect(() => {
@@ -44,31 +44,39 @@ const Particle = ({ delay }) => {
             useNativeDriver: true,
           }),
           Animated.sequence([
-            Animated.timing(opacityAnim, { toValue: 0.4, duration: 2000, useNativeDriver: true }),
+            Animated.timing(opacityAnim, {
+              toValue: 0.4,
+              duration: 2000,
+              useNativeDriver: true,
+            }),
             Animated.delay(10000),
-            Animated.timing(opacityAnim, { toValue: 0, duration: 3000, useNativeDriver: true }),
-          ])
-        ])
-      ])
+            Animated.timing(opacityAnim, {
+              toValue: 0,
+              duration: 3000,
+              useNativeDriver: true,
+            }),
+          ]),
+        ]),
+      ]),
     ).start();
   }, []);
 
   const translateY = moveAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, -100 - Math.random() * 200]
+    outputRange: [0, -100 - Math.random() * 200],
   });
 
   return (
-    <Animated.View 
+    <Animated.View
       style={[
-        styles.particle, 
-        { 
-          left: startPos.x, 
-          top: startPos.y, 
+        styles.particle,
+        {
+          left: startPos.x,
+          top: startPos.y,
           opacity: opacityAnim,
-          transform: [{ translateY }]
-        }
-      ]} 
+          transform: [{ translateY }],
+        },
+      ]}
     />
   );
 };
@@ -77,7 +85,7 @@ export default function MainScreen() {
   const navigate = useNavigation();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const logoScale = useRef(new Animated.Value(0.9)).current;
-  
+
   useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
@@ -89,7 +97,7 @@ export default function MainScreen() {
         toValue: 1,
         friction: 4,
         useNativeDriver: true,
-      })
+      }),
     ]).start();
   }, []);
 
@@ -114,7 +122,12 @@ export default function MainScreen() {
 
         {/* Central Content */}
         <View style={styles.centralContent}>
-          <Animated.View style={[styles.logoContainer, { transform: [{ scale: logoScale }] }]}>
+          <Animated.View
+            style={[
+              styles.logoContainer,
+              { transform: [{ scale: logoScale }] },
+            ]}
+          >
             <View style={styles.logoGlow} />
             <Image
               source={require("../assets/logo.png")}
@@ -125,11 +138,11 @@ export default function MainScreen() {
 
           <View style={styles.titleSection}>
             <Text style={styles.appTitle}>
-              FAF<Text style={{color: CYAN_ACCENT}}>_MOBILE</Text>
+              FAF<Text style={{ color: CYAN_ACCENT }}>_MOBILE</Text>
             </Text>
             <View style={styles.titleUnderline} />
             <Text style={styles.welcomeSubtitle}>
-              SECURE GLOBAL CYBER-FREELANCE PROTOCOL v2.0
+              GIAO THỨC VIDEO EDITOR FREELANCER TOÀN CẦU v2.0
             </Text>
           </View>
 
@@ -141,7 +154,7 @@ export default function MainScreen() {
               activeOpacity={0.7}
             >
               <LinearGradient
-                colors={[CYAN_ACCENT, '#0891b2']}
+                colors={[CYAN_ACCENT, "#0891b2"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.gradientBtn}
@@ -164,8 +177,11 @@ export default function MainScreen() {
 
         <View style={styles.footer}>
           <View style={styles.footerLine} />
-          <Text style={styles.footerText}>SYSTEM STATUS: <Text style={{color: '#4ade80'}}>READY</Text></Text>
-          <Text style={styles.versionText}>ENCRYPTED CONNECTION v2.4.9</Text>
+          <Text style={styles.footerText}>
+            TRẠNG THÁI HỆ THỐNG:{" "}
+            <Text style={{ color: "#4ade80" }}>SẴN SÀNG</Text>
+          </Text>
+          <Text style={styles.versionText}>KẾT NỐI ĐƯỢC MÃ HÓA v2.4.9</Text>
         </View>
       </Animated.View>
 
@@ -185,7 +201,7 @@ const styles = StyleSheet.create({
     opacity: 0.1,
     borderWidth: 0.5,
     borderColor: CYAN_ACCENT,
-    // Note: React Native doesn't support background-image grids easily, 
+    // Note: React Native doesn't support background-image grids easily,
     // but we can use border patterns or just atmospheric glow.
   },
   container: {
@@ -195,29 +211,29 @@ const styles = StyleSheet.create({
     paddingVertical: 60,
   },
   hudCorner: {
-    position: 'absolute',
+    position: "absolute",
     width: 20,
     height: 20,
-    borderColor: CYAN_ACCENT + '60',
+    borderColor: CYAN_ACCENT + "60",
     borderWidth: 2,
   },
   topLeft: { top: 40, left: 20, borderRightWidth: 0, borderBottomWidth: 0 },
   topRight: { top: 40, right: 20, borderLeftWidth: 0, borderBottomWidth: 0 },
   bottomLeft: { bottom: 40, left: 20, borderRightWidth: 0, borderTopWidth: 0 },
   bottomRight: { bottom: 40, right: 20, borderLeftWidth: 0, borderTopWidth: 0 },
-  
+
   centralContent: {
     alignItems: "center",
     marginTop: height * 0.1,
   },
   logoContainer: {
-    position: 'relative',
-    alignItems: 'center',
-    justifyContent: 'center',
+    position: "relative",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 40,
   },
   logoGlow: {
-    position: 'absolute',
+    position: "absolute",
     width: 200,
     height: 200,
     backgroundColor: CYAN_ACCENT,
@@ -235,7 +251,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   titleSection: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 60,
   },
   appTitle: {
@@ -243,7 +259,7 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     color: TEXT_PRIMARY,
     letterSpacing: 6,
-    textShadowColor: CYAN_ACCENT + '80',
+    textShadowColor: CYAN_ACCENT + "80",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },
@@ -257,7 +273,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: TEXT_SECONDARY,
     textAlign: "center",
-    fontWeight: '900',
+    fontWeight: "900",
     letterSpacing: 2,
     opacity: 0.8,
   },
@@ -269,7 +285,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 56,
     borderRadius: 8,
-    overflow: 'hidden',
+    overflow: "hidden",
     shadowColor: CYAN_ACCENT,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.6,
@@ -278,8 +294,8 @@ const styles = StyleSheet.create({
   },
   gradientBtn: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   primaryButtonText: {
     color: "#FFF",
@@ -291,12 +307,12 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 56,
     borderRadius: 8,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: CYAN_ACCENT + '40',
+    borderColor: CYAN_ACCENT + "40",
     alignItems: "center",
     justifyContent: "center",
-    position: 'relative',
+    position: "relative",
   },
   secondaryButtonText: {
     color: CYAN_ACCENT,
@@ -305,7 +321,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
   },
   btnClip: {
-    position: 'absolute',
+    position: "absolute",
     top: -1,
     right: -1,
     width: 12,
@@ -321,7 +337,7 @@ const styles = StyleSheet.create({
   footerLine: {
     width: 40,
     height: 1,
-    backgroundColor: '#1e293b',
+    backgroundColor: "#1e293b",
     marginBottom: 10,
   },
   footerText: {
@@ -332,24 +348,24 @@ const styles = StyleSheet.create({
   },
   versionText: {
     fontSize: 8,
-    color: '#334155',
+    color: "#334155",
     fontWeight: "700",
   },
   particle: {
-    position: 'absolute',
+    position: "absolute",
     width: 4,
     height: 4,
     backgroundColor: CYAN_ACCENT,
     borderRadius: 2,
   },
   scanline: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     height: 2,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
     zIndex: 100,
     // Animation via JS/Native driver can be added here
-  }
+  },
 });

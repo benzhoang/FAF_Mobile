@@ -64,7 +64,8 @@ export default function OTPScreen({ navigation, route }) {
         if (result.success) {
           setAlertConfig({
             title: "THÀNH CÔNG",
-            message: "Hệ thống đã xác thực định danh. Vui lòng đăng nhập để tiếp tục.",
+            message:
+              "Hệ thống đã xác thực định danh. Vui lòng đăng nhập để tiếp tục.",
             type: "success",
           });
           setAlertVisible(true);
@@ -138,19 +139,45 @@ export default function OTPScreen({ navigation, route }) {
           animationType="fade"
           onRequestClose={() => setAlertVisible(false)}
         >
-          <Pressable style={styles.alertOverlay} onPress={() => setAlertVisible(false)}>
-            <Pressable style={styles.alertDialog} onPress={(e) => e.stopPropagation()}>
-              <View style={[styles.alertIconWrap, { backgroundColor: alertConfig.type === 'success' ? EMERALD + '20' : ROSE + '20' }]}>
-                 <Ionicons 
-                  name={alertConfig.type === 'success' ? "checkmark-circle" : "alert-circle"} 
-                  size={40} 
-                  color={alertConfig.type === 'success' ? EMERALD : ROSE} 
-                 />
+          <Pressable
+            style={styles.alertOverlay}
+            onPress={() => setAlertVisible(false)}
+          >
+            <Pressable
+              style={styles.alertDialog}
+              onPress={(e) => e.stopPropagation()}
+            >
+              <View
+                style={[
+                  styles.alertIconWrap,
+                  {
+                    backgroundColor:
+                      alertConfig.type === "success"
+                        ? EMERALD + "20"
+                        : ROSE + "20",
+                  },
+                ]}
+              >
+                <Ionicons
+                  name={
+                    alertConfig.type === "success"
+                      ? "checkmark-circle"
+                      : "alert-circle"
+                  }
+                  size={40}
+                  color={alertConfig.type === "success" ? EMERALD : ROSE}
+                />
               </View>
               <Text style={styles.alertTitle}>{alertConfig.title}</Text>
               <Text style={styles.alertMessage}>{alertConfig.message}</Text>
               <TouchableOpacity
-                style={[styles.alertOKButton, { backgroundColor: alertConfig.type === 'success' ? EMERALD : ROSE }]}
+                style={[
+                  styles.alertOKButton,
+                  {
+                    backgroundColor:
+                      alertConfig.type === "success" ? EMERALD : ROSE,
+                  },
+                ]}
                 onPress={handleAlertOK}
               >
                 <Text style={styles.alertOKText}>XÁC NHẬN</Text>
@@ -173,10 +200,16 @@ export default function OTPScreen({ navigation, route }) {
               style={styles.logoImage}
               resizeMode="contain"
             />
-            <Text style={styles.title}>VERIFY<Text style={{color: CYAN_ACCENT}}>_IDENTITY</Text></Text>
+            <Text style={styles.title}>
+              Xác thực <Text style={{ color: CYAN_ACCENT }}>OTP</Text>
+            </Text>
             <Text style={styles.description}>
-              Xác thực định danh truy cập vào nền tảng <Text style={{color: "#FFF"}}>FAF</Text>. Mã 6 chữ số đã được gửi tới:{"\n"}
-              <Text style={{color: CYAN_ACCENT, fontWeight: "600"}}>{email}</Text>
+              Xác thực định danh truy cập vào nền tảng{" "}
+              <Text style={{ color: "#FFF" }}>FAF</Text>. Mã 6 chữ số đã được
+              gửi tới:{"\n"}
+              <Text style={{ color: CYAN_ACCENT, fontWeight: "600" }}>
+                {email}
+              </Text>
             </Text>
           </View>
 
@@ -186,9 +219,9 @@ export default function OTPScreen({ navigation, route }) {
                 key={index}
                 ref={(el) => (inputRefs.current[index] = el)}
                 style={[
-                  styles.otpBox, 
+                  styles.otpBox,
                   digit !== "" && styles.otpBoxFilled,
-                  inputRefs.current[index]?.isFocused() && styles.otpBoxActive
+                  inputRefs.current[index]?.isFocused() && styles.otpBoxActive,
                 ]}
                 value={digit}
                 onChangeText={(v) => handleOtpChange(v, index)}
@@ -215,7 +248,11 @@ export default function OTPScreen({ navigation, route }) {
             ) : (
               <>
                 <Text style={styles.verifyButtonText}>XÁC THỰC TRUY CẬP</Text>
-                <Ionicons name="shield-checkmark-outline" size={20} color="#FFF" />
+                <Ionicons
+                  name="shield-checkmark-outline"
+                  size={20}
+                  color="#FFF"
+                />
               </>
             )}
           </TouchableOpacity>

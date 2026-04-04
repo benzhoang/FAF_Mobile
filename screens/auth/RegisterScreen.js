@@ -45,7 +45,12 @@ export default function RegisterScreen({ navigation }) {
 
   const handleRegister = async () => {
     setErrorMessage("");
-    if (!fullName.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
+    if (
+      !fullName.trim() ||
+      !email.trim() ||
+      !password.trim() ||
+      !confirmPassword.trim()
+    ) {
       setErrorMessage("Vui lòng điền đầy đủ thông tin");
       return;
     }
@@ -99,8 +104,10 @@ export default function RegisterScreen({ navigation }) {
             style={styles.alertDialog}
             onPress={(e) => e.stopPropagation()}
           >
-            <View style={[styles.alertIconWrap, { backgroundColor: ROSE + '20' }]}>
-               <Ionicons name="alert-circle" size={40} color={ROSE} />
+            <View
+              style={[styles.alertIconWrap, { backgroundColor: ROSE + "20" }]}
+            >
+              <Ionicons name="alert-circle" size={40} color={ROSE} />
             </View>
             <Text style={styles.alertTitle}>{alertConfig.title}</Text>
             <Text style={styles.alertMessage}>{alertConfig.message}</Text>
@@ -136,16 +143,24 @@ export default function RegisterScreen({ navigation }) {
               style={styles.logoImage}
               resizeMode="contain"
             />
-            <Text style={styles.welcomeTitle}>USER<Text style={{color: CYAN_ACCENT}}>_JOIN</Text></Text>
+            <Text style={styles.welcomeTitle}>
+              Đăng <Text style={{ color: CYAN_ACCENT }}>ký</Text>
+            </Text>
             <Text style={styles.welcomeSubtitle}>
-              Khởi tạo danh tính của bạn trên nền tảng <Text style={{color: "#FFF"}}>FAF</Text>.
+              Khởi tạo danh tính của bạn trên nền tảng{" "}
+              <Text style={{ color: "#FFF" }}>FAF</Text>.
             </Text>
           </View>
 
           <View style={styles.inputContainer}>
             <View style={styles.inputWrapper}>
               <View style={styles.inputFieldContainer}>
-                <Ionicons name="person-outline" size={20} color={TEXT_SECONDARY} style={styles.inputIcon} />
+                <Ionicons
+                  name="person-outline"
+                  size={20}
+                  color={TEXT_SECONDARY}
+                  style={styles.inputIcon}
+                />
                 <TextInput
                   style={styles.inputField}
                   placeholder="Họ và tên"
@@ -159,7 +174,12 @@ export default function RegisterScreen({ navigation }) {
 
             <View style={styles.inputWrapper}>
               <View style={styles.inputFieldContainer}>
-                <Ionicons name="mail-outline" size={20} color={TEXT_SECONDARY} style={styles.inputIcon} />
+                <Ionicons
+                  name="mail-outline"
+                  size={20}
+                  color={TEXT_SECONDARY}
+                  style={styles.inputIcon}
+                />
                 <TextInput
                   style={styles.inputField}
                   placeholder="Địa chỉ email"
@@ -175,7 +195,12 @@ export default function RegisterScreen({ navigation }) {
 
             <View style={styles.inputWrapper}>
               <View style={styles.inputFieldContainer}>
-                <Ionicons name="lock-closed-outline" size={20} color={TEXT_SECONDARY} style={styles.inputIcon} />
+                <Ionicons
+                  name="lock-closed-outline"
+                  size={20}
+                  color={TEXT_SECONDARY}
+                  style={styles.inputIcon}
+                />
                 <TextInput
                   style={styles.inputField}
                   placeholder="Mật khẩu"
@@ -186,15 +211,27 @@ export default function RegisterScreen({ navigation }) {
                   autoCapitalize="none"
                   autoCorrect={false}
                 />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-                  <Ionicons name={showPassword ? "eye-outline" : "eye-off-outline"} size={20} color={TEXT_SECONDARY} />
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeIcon}
+                >
+                  <Ionicons
+                    name={showPassword ? "eye-outline" : "eye-off-outline"}
+                    size={20}
+                    color={TEXT_SECONDARY}
+                  />
                 </TouchableOpacity>
               </View>
             </View>
 
             <View style={styles.inputWrapper}>
               <View style={styles.inputFieldContainer}>
-                <Ionicons name="shield-checkmark-outline" size={20} color={TEXT_SECONDARY} style={styles.inputIcon} />
+                <Ionicons
+                  name="shield-checkmark-outline"
+                  size={20}
+                  color={TEXT_SECONDARY}
+                  style={styles.inputIcon}
+                />
                 <TextInput
                   style={styles.inputField}
                   placeholder="Xác nhận mật khẩu"
@@ -205,8 +242,17 @@ export default function RegisterScreen({ navigation }) {
                   autoCapitalize="none"
                   autoCorrect={false}
                 />
-                <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIcon}>
-                  <Ionicons name={showConfirmPassword ? "eye-outline" : "eye-off-outline"} size={20} color={TEXT_SECONDARY} />
+                <TouchableOpacity
+                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                  style={styles.eyeIcon}
+                >
+                  <Ionicons
+                    name={
+                      showConfirmPassword ? "eye-outline" : "eye-off-outline"
+                    }
+                    size={20}
+                    color={TEXT_SECONDARY}
+                  />
                 </TouchableOpacity>
               </View>
             </View>
@@ -248,10 +294,11 @@ export default function RegisterScreen({ navigation }) {
             {loading ? (
               <ActivityIndicator color="#FFF" />
             ) : (
-              <Text style={styles.createAccountButtonText}>KHỞI TẠO TÀI KHOẢN</Text>
+              <Text style={styles.createAccountButtonText}>
+                KHỞI TẠO TÀI KHOẢN
+              </Text>
             )}
           </TouchableOpacity>
-
 
           <View style={styles.loginLinkContainer}>
             <Text style={styles.footerText}>Đã có tài khoản? </Text>
@@ -443,7 +490,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 50,
   },
   footerText: {
     fontSize: 14,

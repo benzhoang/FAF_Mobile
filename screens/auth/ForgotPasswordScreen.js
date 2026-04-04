@@ -46,13 +46,15 @@ export default function ForgotPasswordScreen({ navigation }) {
         Alert.alert("Thành công", "Mã OTP đã được gửi về email của bạn.", [
           {
             text: "Tiếp tục",
-            onPress: () => navigation.navigate("ResetPassword", { email: email.trim() }),
+            onPress: () =>
+              navigation.navigate("ResetPassword", { email: email.trim() }),
           },
         ]);
       } else {
-        const errorMsg = res.error === "Email not found"
-          ? "Địa chỉ email không tồn tại trong hệ thống."
-          : (res.error || "Không thể gửi OTP. Vui lòng thử lại.");
+        const errorMsg =
+          res.error === "Email not found"
+            ? "Địa chỉ email không tồn tại trong hệ thống."
+            : res.error || "Không thể gửi OTP. Vui lòng thử lại.";
         Alert.alert("Lỗi", errorMsg);
       }
     } catch (err) {
@@ -78,53 +80,61 @@ export default function ForgotPasswordScreen({ navigation }) {
 
           <View style={styles.header}>
             <View style={styles.iconCircle}>
-              <Ionicons name="mail-open-outline" size={40} color={CYAN_ACCENT} />
+              <Ionicons
+                name="mail-open-outline"
+                size={40}
+                color={CYAN_ACCENT}
+              />
             </View>
             <Text style={styles.title}>Quên mật khẩu?</Text>
             <Text style={styles.subtitle}>
-              Đừng lo lắng! Nhập email của bạn để nhận mã OTP khôi phục mật khẩu.
+              Đừng lo lắng! Nhập email của bạn để nhận mã OTP khôi phục mật
+              khẩu.
             </Text>
           </View>
 
-          <View style={styles.form}>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email định danh</Text>
-              <View style={styles.inputField}>
-                <Ionicons
-                  name="mail-outline"
-                  size={20}
-                  color={TEXT_MUTED}
-                  style={styles.inputIcon}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="name@example.com"
-                  placeholderTextColor={TEXT_MUTED}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  value={email}
-                  onChangeText={setEmail}
-                />
-              </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Email định danh</Text>
+            <View style={styles.inputField}>
+              <Ionicons
+                name="mail-outline"
+                size={20}
+                color={TEXT_MUTED}
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="name@example.com"
+                placeholderTextColor={TEXT_MUTED}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                value={email}
+                onChangeText={setEmail}
+              />
             </View>
-
-            <TouchableOpacity
-              style={[styles.button, loading && styles.buttonDisabled]}
-              onPress={handleSendOTP}
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator color="#FFF" />
-              ) : (
-                <Text style={styles.buttonText}>Gửi mã OTP</Text>
-              )}
-            </TouchableOpacity>
           </View>
+
+          <TouchableOpacity
+            style={[styles.button, loading && styles.buttonDisabled]}
+            onPress={handleSendOTP}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#FFF" />
+            ) : (
+              <Text style={styles.buttonText}>Gửi mã OTP</Text>
+            )}
+          </TouchableOpacity>
 
           <View style={styles.footer}>
             <Text style={styles.footerText}>Nhớ lại mật khẩu? </Text>
             <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-              <Text style={[styles.footerText, { color: CYAN_ACCENT, fontWeight: "700" }]}>
+              <Text
+                style={[
+                  styles.footerText,
+                  { color: CYAN_ACCENT, fontWeight: "700" },
+                ]}
+              >
                 Đăng nhập
               </Text>
             </TouchableOpacity>
@@ -184,14 +194,6 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     paddingHorizontal: 10,
   },
-  form: {
-    backgroundColor: BG_SURFACE,
-    padding: 24,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: "#1e293b",
-    marginBottom: 20,
-  },
   inputGroup: {
     marginBottom: 24,
   },
@@ -244,7 +246,7 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 20,
+    marginTop: 30,
   },
   footerText: {
     fontSize: 14,
