@@ -1,7 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, RefreshControl, Dimensions, Platform } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+  RefreshControl,
+  Dimensions,
+  Platform,
+} from "react-native";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
-import { getJobs, getCurrentUserProfile, getRecommendedJobs, getPosts, toggleLikePost } from "../../service/api";
+import {
+  getJobs,
+  getCurrentUserProfile,
+  getRecommendedJobs,
+  getPosts,
+  toggleLikePost,
+} from "../../service/api";
 
 const { width } = Dimensions.get("window");
 
@@ -29,18 +45,19 @@ export default function HomeScreen({ navigation }) {
   const fetchData = async () => {
     try {
       const type = jobType === "Short-term" ? "SHORT_TERM" : "LONG_TERM";
-      const [profileRes, jobsRes, recommendedRes, postsRes] = await Promise.all([
-        getCurrentUserProfile(),
-        getJobs({ jobType: type }),
-        getRecommendedJobs({ limit: 5 }),
-        getPosts(1, 10)
-      ]);
+      const [profileRes, jobsRes, recommendedRes, postsRes] = await Promise.all(
+        [
+          getCurrentUserProfile(),
+          getJobs({ jobType: type }),
+          getRecommendedJobs({ limit: 5 }),
+          getPosts(1, 10),
+        ],
+      );
 
       if (profileRes.success) setUser(profileRes.data);
       if (jobsRes.success) setJobs(jobsRes.rows || jobsRes.data || []);
       if (recommendedRes.success) setRecommendedJobs(recommendedRes.data || []);
       if (postsRes.success) setPosts(postsRes.data || []);
-      
     } catch (err) {
       console.error("Fetch home data error:", err);
     } finally {
@@ -69,14 +86,21 @@ export default function HomeScreen({ navigation }) {
         style={styles.container}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={CYAN_ACCENT} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={CYAN_ACCENT}
+          />
+        }
       >
         {/* System Status Bar */}
         <View style={styles.statusBar}>
           <View style={styles.statusLeft}>
             <View style={styles.onlineDot} />
             <Text style={styles.statusText}>
-              {new Date().getHours() < 12 ? "MORNING" : "AFTERNOON"}, {user?.full_name?.toUpperCase() || "AGENT"}
+              {new Date().getHours() < 12 ? "SÁNG" : "CHIỀU TỐI"},{" "}
+              {user?.full_name?.toUpperCase() || "FREELANCER"}
             </Text>
           </View>
           <View style={styles.statusRight}>
@@ -87,40 +111,78 @@ export default function HomeScreen({ navigation }) {
         {/* Top Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.headerWelcome}>Welcome back,</Text>
-            <Text style={styles.headerTitle}>{user?.full_name || "Freelancer"}</Text>
+            <Text style={styles.headerWelcome}>Chào mừng trở lại,</Text>
+            <Text style={styles.headerTitle}>
+              {user?.full_name || "Freelancer"}
+            </Text>
           </View>
-          <TouchableOpacity style={styles.notifyBtn} onPress={() => navigation.navigate("Notification")}>
-            <Ionicons name="notifications-outline" size={24} color={TEXT_PRIMARY} />
+          <TouchableOpacity
+            style={styles.notifyBtn}
+            onPress={() => navigation.navigate("Notification")}
+          >
+            <Ionicons
+              name="notifications-outline"
+              size={24}
+              color={TEXT_PRIMARY}
+            />
             <View style={styles.notifyBadge} />
           </TouchableOpacity>
         </View>
 
         {/* Quick Access Grid */}
         <View style={styles.quickAccessGrid}>
-          <TouchableOpacity style={styles.quickAction} onPress={() => navigation.navigate("Explore")}>
-            <View style={[styles.actionIconWrap, { backgroundColor: CYAN_ACCENT + "20" }]}>
+          <TouchableOpacity
+            style={styles.quickAction}
+            onPress={() => navigation.navigate("Explore")}
+          >
+            <View
+              style={[
+                styles.actionIconWrap,
+                { backgroundColor: CYAN_ACCENT + "20" },
+              ]}
+            >
               <Ionicons name="search" size={20} color={CYAN_ACCENT} />
             </View>
-            <Text style={styles.actionLabel}>Find Work</Text>
+            <Text style={styles.actionLabel}>Tìm việc</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.quickAction} onPress={() => navigation.navigate("MyProposals")}>
-            <View style={[styles.actionIconWrap, { backgroundColor: EMERALD + "20" }]}>
+          <TouchableOpacity
+            style={styles.quickAction}
+            onPress={() => navigation.navigate("MyProposals")}
+          >
+            <View
+              style={[
+                styles.actionIconWrap,
+                { backgroundColor: EMERALD + "20" },
+              ]}
+            >
               <Ionicons name="briefcase" size={20} color={EMERALD} />
             </View>
-            <Text style={styles.actionLabel}>Dashboard</Text>
+            <Text style={styles.actionLabel}>Bảng điều khiển</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.quickAction} onPress={() => navigation.navigate("Message")}>
-            <View style={[styles.actionIconWrap, { backgroundColor: AMBER + "20" }]}>
+          <TouchableOpacity
+            style={styles.quickAction}
+            onPress={() => navigation.navigate("Message")}
+          >
+            <View
+              style={[styles.actionIconWrap, { backgroundColor: AMBER + "20" }]}
+            >
               <Ionicons name="chatbubble-ellipses" size={20} color={AMBER} />
             </View>
-            <Text style={styles.actionLabel}>Messages</Text>
+            <Text style={styles.actionLabel}>Tin nhắn</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.quickAction} onPress={() => navigation.navigate("Profile")}>
-            <View style={[styles.actionIconWrap, { backgroundColor: PURPLE + "20" }]}>
+          <TouchableOpacity
+            style={styles.quickAction}
+            onPress={() => navigation.navigate("Profile")}
+          >
+            <View
+              style={[
+                styles.actionIconWrap,
+                { backgroundColor: PURPLE + "20" },
+              ]}
+            >
               <Ionicons name="wallet" size={20} color={PURPLE} />
             </View>
-            <Text style={styles.actionLabel}>Wallet</Text>
+            <Text style={styles.actionLabel}>Ví</Text>
           </TouchableOpacity>
         </View>
 
@@ -128,22 +190,39 @@ export default function HomeScreen({ navigation }) {
         {recommendedJobs.length > 0 && (
           <View style={styles.sectionHeader}>
             <View style={styles.sectionLine} />
-            <Text style={styles.sectionTitleCap}>RECOMMENDED_CONTRACTS</Text>
+            <Text style={styles.sectionTitleCap}>CÔNG VIỆC ĐỀ XUẤT</Text>
             <View style={styles.sectionLine} />
           </View>
         )}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.recommendedScroll} contentContainerStyle={{ paddingHorizontal: 20 }}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.recommendedScroll}
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+        >
           {recommendedJobs.map((item, idx) => (
-            <TouchableOpacity 
-              key={idx} 
+            <TouchableOpacity
+              key={idx}
               style={styles.recommendedCard}
-              onPress={() => navigation.navigate("JobDetail", { jobId: item.id })}
+              onPress={() =>
+                navigation.navigate("JobDetail", { jobId: item.id })
+              }
             >
-              <Text style={styles.recTitle} numberOfLines={1}>{item.title}</Text>
-              <Text style={styles.recDesc} numberOfLines={2}>{item.description}</Text>
+              <Text style={styles.recTitle} numberOfLines={1}>
+                {item.title}
+              </Text>
+              <Text style={styles.recDesc} numberOfLines={2}>
+                {item.description}
+              </Text>
               <View style={styles.recFooter}>
-                <Text style={styles.recBudget}>{getFormatPrice(item.budget)}</Text>
-                <Ionicons name="arrow-forward-circle" size={20} color={CYAN_ACCENT} />
+                <Text style={styles.recBudget}>
+                  {getFormatPrice(item.budget)}
+                </Text>
+                <Ionicons
+                  name="arrow-forward-circle"
+                  size={20}
+                  color={CYAN_ACCENT}
+                />
               </View>
             </TouchableOpacity>
           ))}
@@ -153,33 +232,65 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.feedLabelRow}>
           <View style={[styles.sectionLine, { flex: 1 }]} />
           <View style={styles.activeFeedBadge}>
-            <View style={[styles.onlineDot, { backgroundColor: CYAN_ACCENT }]} />
-            <Text style={styles.activeFeedText}>ACTIVE_FEED_STREAM</Text>
+            <View
+              style={[styles.onlineDot, { backgroundColor: CYAN_ACCENT }]}
+            />
+            <Text style={styles.activeFeedText}>DÒNG FEED HOẠT ĐỘNG</Text>
           </View>
           <View style={[styles.sectionLine, { flex: 1 }]} />
         </View>
 
         {/* Feed Tabs */}
         <View style={styles.tabContainer}>
-          <TouchableOpacity 
-            style={[styles.feedTab, activeTab === "ALL" && styles.feedTabActive]}
+          <TouchableOpacity
+            style={[
+              styles.feedTab,
+              activeTab === "ALL" && styles.feedTabActive,
+            ]}
             onPress={() => setActiveTab("ALL")}
           >
-            <Text style={[styles.feedTabText, activeTab === "ALL" && styles.feedTabTextActive]}>📡 ALL</Text>
+            <Text
+              style={[
+                styles.feedTabText,
+                activeTab === "ALL" && styles.feedTabTextActive,
+              ]}
+            >
+              📡 TẤT CẢ
+            </Text>
             {activeTab === "ALL" && <View style={styles.tabIndicator} />}
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.feedTab, activeTab === "JOBS" && styles.feedTabActive]}
+          <TouchableOpacity
+            style={[
+              styles.feedTab,
+              activeTab === "JOBS" && styles.feedTabActive,
+            ]}
             onPress={() => setActiveTab("JOBS")}
           >
-            <Text style={[styles.feedTabText, activeTab === "JOBS" && styles.feedTabTextActive]}>◈ JOBS</Text>
+            <Text
+              style={[
+                styles.feedTabText,
+                activeTab === "JOBS" && styles.feedTabTextActive,
+              ]}
+            >
+              ◈ CÔNG VIỆC
+            </Text>
             {activeTab === "JOBS" && <View style={styles.tabIndicator} />}
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.feedTab, activeTab === "SYSTEM" && styles.feedTabActive]}
+          <TouchableOpacity
+            style={[
+              styles.feedTab,
+              activeTab === "SYSTEM" && styles.feedTabActive,
+            ]}
             onPress={() => setActiveTab("SYSTEM")}
           >
-            <Text style={[styles.feedTabText, activeTab === "SYSTEM" && styles.feedTabTextActive]}>⬡ SYSTEM</Text>
+            <Text
+              style={[
+                styles.feedTabText,
+                activeTab === "SYSTEM" && styles.feedTabTextActive,
+              ]}
+            >
+              ⬡ HỆ THỐNG
+            </Text>
             {activeTab === "SYSTEM" && <View style={styles.tabIndicator} />}
           </TouchableOpacity>
         </View>
@@ -187,23 +298,37 @@ export default function HomeScreen({ navigation }) {
         {/* Combined Feed Container */}
         <View style={styles.feedContainer}>
           {loading && !refreshing ? (
-            <ActivityIndicator size="large" color={CYAN_ACCENT} style={{ marginTop: 40 }} />
+            <ActivityIndicator
+              size="large"
+              color={CYAN_ACCENT}
+              style={{ marginTop: 40 }}
+            />
           ) : (
             <>
               {activeTab === "ALL" && (
                 <>
                   {posts.map((post) => (
                     <View key={post.id} style={styles.postCard}>
-                      <TouchableOpacity 
+                      <TouchableOpacity
                         style={styles.postHeader}
-                        onPress={() => navigation.navigate("OtherProfile", { userId: post.user_id })}
+                        onPress={() =>
+                          navigation.navigate("OtherProfile", {
+                            userId: post.user_id,
+                          })
+                        }
                       >
                         <View style={styles.postAvatar}>
-                          <Text style={styles.postAvatarText}>{post.user_full_name?.charAt(0) || "U"}</Text>
+                          <Text style={styles.postAvatarText}>
+                            {post.user_full_name?.charAt(0) || "U"}
+                          </Text>
                         </View>
                         <View>
-                          <Text style={styles.postUserName}>{post.user_full_name}</Text>
-                          <Text style={styles.postTime}>{new Date(post.created_at).toLocaleDateString()}</Text>
+                          <Text style={styles.postUserName}>
+                            {post.user_full_name}
+                          </Text>
+                          <Text style={styles.postTime}>
+                            {new Date(post.created_at).toLocaleDateString()}
+                          </Text>
                         </View>
                       </TouchableOpacity>
                       <Text style={styles.postContent}>{post.content}</Text>
@@ -212,12 +337,24 @@ export default function HomeScreen({ navigation }) {
                       )}
                       <View style={styles.postFooter}>
                         <TouchableOpacity style={styles.postAction}>
-                          <Ionicons name="heart-outline" size={18} color={TEXT_SECONDARY} />
-                          <Text style={styles.postActionText}>{post.likes_count || 0}</Text>
+                          <Ionicons
+                            name="heart-outline"
+                            size={18}
+                            color={TEXT_SECONDARY}
+                          />
+                          <Text style={styles.postActionText}>
+                            {post.likes_count || 0}
+                          </Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.postAction}>
-                          <Ionicons name="chatbubble-outline" size={18} color={TEXT_SECONDARY} />
-                          <Text style={styles.postActionText}>{post.comments_count || 0}</Text>
+                          <Ionicons
+                            name="chatbubble-outline"
+                            size={18}
+                            color={TEXT_SECONDARY}
+                          />
+                          <Text style={styles.postActionText}>
+                            {post.comments_count || 0}
+                          </Text>
                         </TouchableOpacity>
                       </View>
                     </View>
@@ -228,62 +365,123 @@ export default function HomeScreen({ navigation }) {
               {(activeTab === "ALL" || activeTab === "JOBS") && (
                 <>
                   <View style={styles.jobFeedHeader}>
-                    <Text style={styles.sectionTitle}>Available Jobs</Text>
+                    <Text style={styles.sectionTitle}>CÔNG VIỆC CÓ SẴN</Text>
                     <View style={styles.jobTypeTabs}>
-                      <TouchableOpacity onPress={() => setJobType("Short-term")}>
-                         <Text style={[styles.jobTypeText, jobType === "Short-term" && styles.jobTypeTextActive]}>Short</Text>
+                      <TouchableOpacity
+                        onPress={() => setJobType("Short-term")}
+                      >
+                        <Text
+                          style={[
+                            styles.jobTypeText,
+                            jobType === "Short-term" &&
+                              styles.jobTypeTextActive,
+                          ]}
+                        >
+                          Ngắn hạn
+                        </Text>
                       </TouchableOpacity>
                       <Text style={{ color: TEXT_MUTED }}>|</Text>
                       <TouchableOpacity onPress={() => setJobType("Long-term")}>
-                         <Text style={[styles.jobTypeText, jobType === "Long-term" && styles.jobTypeTextActive]}>Long</Text>
+                        <Text
+                          style={[
+                            styles.jobTypeText,
+                            jobType === "Long-term" && styles.jobTypeTextActive,
+                          ]}
+                        >
+                          Dài hạn
+                        </Text>
                       </TouchableOpacity>
                     </View>
                   </View>
-                  
+
                   {jobs.length === 0 ? (
                     <View style={styles.emptyState}>
-                      <Ionicons name="documents-outline" size={64} color={TEXT_MUTED} />
-                      <Text style={styles.emptyText}>Hiện chưa có công việc nào phù hợp</Text>
+                      <Ionicons
+                        name="documents-outline"
+                        size={64}
+                        color={TEXT_MUTED}
+                      />
+                      <Text style={styles.emptyText}>
+                        Hiện chưa có công việc nào phù hợp
+                      </Text>
                     </View>
                   ) : (
                     jobs.map((job) => (
                       <TouchableOpacity
                         key={job.id}
                         style={styles.jobCard}
-                        onPress={() => navigation.navigate("JobDetail", { jobId: job.id })}
+                        onPress={() =>
+                          navigation.navigate("JobDetail", { jobId: job.id })
+                        }
                         activeOpacity={0.8}
                       >
                         <View style={styles.jobCardHeader}>
                           <View style={styles.categoryBadge}>
-                            <Text style={styles.categoryText}>{job.category_name}</Text>
+                            <Text style={styles.categoryText}>
+                              {job.category_name}
+                            </Text>
                           </View>
-                          <Text style={styles.timeText}>{new Date(job.created_at).toLocaleDateString()}</Text>
+                          <Text style={styles.timeText}>
+                            {new Date(job.created_at).toLocaleDateString()}
+                          </Text>
                         </View>
-                        
-                        <Text style={styles.jobTitle} numberOfLines={2}>{job.title}</Text>
-                        
+
+                        <Text style={styles.jobTitle} numberOfLines={2}>
+                          {job.title}
+                        </Text>
+
                         <View style={styles.jobInfoRow}>
                           <View style={styles.infoItem}>
-                            <Ionicons name="location-outline" size={14} color={CYAN_ACCENT} />
-                            <Text style={styles.infoText}>{job.job_type === "SHORT_TERM" ? "Short-term" : "Long-term"}</Text>
+                            <Ionicons
+                              name="location-outline"
+                              size={14}
+                              color={CYAN_ACCENT}
+                            />
+                            <Text style={styles.infoText}>
+                              {job.job_type === "SHORT_TERM"
+                                ? "Ngắn hạn"
+                                : "Dài hạn"}
+                            </Text>
                           </View>
                           <View style={styles.infoItem}>
-                            <Ionicons name="wallet-outline" size={14} color={AMBER} />
-                            <Text style={[styles.infoText, { color: AMBER }]}>{getFormatPrice(job.budget)}</Text>
+                            <Ionicons
+                              name="wallet-outline"
+                              size={14}
+                              color={AMBER}
+                            />
+                            <Text style={[styles.infoText, { color: AMBER }]}>
+                              {getFormatPrice(job.budget)}
+                            </Text>
                           </View>
                         </View>
 
                         <Text style={styles.description} numberOfLines={3}>
-                          {job.description || "No description provided. Click to view details."}
+                          {job.description ||
+                            "No description provided. Click to view details."}
                         </Text>
 
                         <View style={styles.jobCardFooter}>
                           <View style={styles.verifiedRow}>
-                            <Ionicons name="shield-checkmark" size={16} color={EMERALD} />
-                            <Text style={styles.verifiedText}>Escrow Protected</Text>
+                            <Ionicons
+                              name="shield-checkmark"
+                              size={16}
+                              color={EMERALD}
+                            />
+                            <Text style={styles.verifiedText}>
+                              Ký quỹ được bảo vệ
+                            </Text>
                           </View>
-                          <TouchableOpacity style={styles.applyDetailBtn} onPress={() => navigation.navigate("JobDetail", { jobId: job.id })}>
-                            <Text style={styles.applyBtnText}>View Details</Text>
+                          <TouchableOpacity
+                            style={styles.applyDetailBtn}
+                            onPress={() =>
+                              navigation.navigate("JobDetail", {
+                                jobId: job.id,
+                              })
+                            }
+                          >
+                            <Text style={styles.applyBtnText}>
+                              Xem chi tiết
+                            </Text>
                           </TouchableOpacity>
                         </View>
                       </TouchableOpacity>

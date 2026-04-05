@@ -102,9 +102,13 @@ export default function Navigator() {
           name="Notification"
           component={NotificationScreen}
           options={{
-            title: "Notification",
+            title: "Thông báo",
             headerStyle: { backgroundColor: "#020617" },
-            headerTitleStyle: { fontWeight: "800", fontSize: 18, color: "#e2e8f0" },
+            headerTitleStyle: {
+              fontWeight: "800",
+              fontSize: 18,
+              color: "#e2e8f0",
+            },
             headerTintColor: "#0891b2",
             headerShadowVisible: false,
             headerBackTitleVisible: false,
@@ -114,9 +118,13 @@ export default function Navigator() {
           name="JobDetail"
           component={JobDetailScreen}
           options={{
-            title: "Job Detail",
+            title: "Chi tiết công việc",
             headerStyle: { backgroundColor: "#020617" },
-            headerTitleStyle: { fontWeight: "800", fontSize: 18, color: "#e2e8f0" },
+            headerTitleStyle: {
+              fontWeight: "800",
+              fontSize: 18,
+              color: "#e2e8f0",
+            },
             headerTintColor: "#0891b2",
             headerShadowVisible: false,
             headerBackTitleVisible: false,
@@ -128,7 +136,11 @@ export default function Navigator() {
           options={{
             title: "Ứng tuyển của tôi",
             headerStyle: { backgroundColor: "#020617" },
-            headerTitleStyle: { fontWeight: "800", fontSize: 18, color: "#e2e8f0" },
+            headerTitleStyle: {
+              fontWeight: "800",
+              fontSize: 18,
+              color: "#e2e8f0",
+            },
             headerTintColor: "#0891b2",
             headerShadowVisible: false,
             headerBackTitleVisible: false,
@@ -140,7 +152,11 @@ export default function Navigator() {
           options={{
             title: "Chỉnh sửa hồ sơ",
             headerStyle: { backgroundColor: "#020617" },
-            headerTitleStyle: { fontWeight: "800", fontSize: 18, color: "#e2e8f0" },
+            headerTitleStyle: {
+              fontWeight: "800",
+              fontSize: 18,
+              color: "#e2e8f0",
+            },
             headerTintColor: "#0891b2",
             headerShadowVisible: false,
             headerBackTitleVisible: false,
@@ -152,7 +168,11 @@ export default function Navigator() {
           options={{
             title: "Hồ sơ cá nhân",
             headerStyle: { backgroundColor: "#020617" },
-            headerTitleStyle: { fontWeight: "800", fontSize: 18, color: "#e2e8f0" },
+            headerTitleStyle: {
+              fontWeight: "800",
+              fontSize: 18,
+              color: "#e2e8f0",
+            },
             headerTintColor: "#0891b2",
             headerShadowVisible: false,
             headerBackTitleVisible: false,
@@ -164,7 +184,11 @@ export default function Navigator() {
           options={{
             title: "Ví FAF",
             headerStyle: { backgroundColor: "#020617" },
-            headerTitleStyle: { fontWeight: "800", fontSize: 18, color: "#e2e8f0" },
+            headerTitleStyle: {
+              fontWeight: "800",
+              fontSize: 18,
+              color: "#e2e8f0",
+            },
             headerTintColor: "#0891b2",
             headerShadowVisible: false,
             headerBackTitleVisible: false,
@@ -176,7 +200,11 @@ export default function Navigator() {
           options={{
             title: "Nạp CRED",
             headerStyle: { backgroundColor: "#020617" },
-            headerTitleStyle: { fontWeight: "800", fontSize: 18, color: "#e2e8f0" },
+            headerTitleStyle: {
+              fontWeight: "800",
+              fontSize: 18,
+              color: "#e2e8f0",
+            },
             headerTintColor: "#0891b2",
             headerShadowVisible: false,
             headerBackTitleVisible: false,
@@ -196,7 +224,11 @@ export default function Navigator() {
           options={{
             title: "Lịch sử công việc",
             headerStyle: { backgroundColor: "#020617" },
-            headerTitleStyle: { fontWeight: "800", fontSize: 18, color: "#e2e8f0" },
+            headerTitleStyle: {
+              fontWeight: "800",
+              fontSize: 18,
+              color: "#e2e8f0",
+            },
             headerTintColor: "#0891b2",
             headerShadowVisible: false,
             headerBackTitleVisible: false,
@@ -215,7 +247,11 @@ export default function Navigator() {
           options={{
             title: "Rút tiền",
             headerStyle: { backgroundColor: "#020617" },
-            headerTitleStyle: { fontWeight: "800", fontSize: 18, color: "#e2e8f0" },
+            headerTitleStyle: {
+              fontWeight: "800",
+              fontSize: 18,
+              color: "#e2e8f0",
+            },
             headerTintColor: "#0891b2",
             headerShadowVisible: false,
             headerBackTitleVisible: false,
@@ -227,7 +263,11 @@ export default function Navigator() {
           options={{
             title: "Đổi mật khẩu",
             headerStyle: { backgroundColor: "#020617" },
-            headerTitleStyle: { fontWeight: "800", fontSize: 18, color: "#e2e8f0" },
+            headerTitleStyle: {
+              fontWeight: "800",
+              fontSize: 18,
+              color: "#e2e8f0",
+            },
             headerTintColor: "#0891b2",
             headerShadowVisible: false,
             headerBackTitleVisible: false,
@@ -239,7 +279,11 @@ export default function Navigator() {
           options={{
             title: "Quản lý người dùng",
             headerStyle: { backgroundColor: "#020617" },
-            headerTitleStyle: { fontWeight: "800", fontSize: 18, color: "#e2e8f0" },
+            headerTitleStyle: {
+              fontWeight: "800",
+              fontSize: 18,
+              color: "#e2e8f0",
+            },
             headerTintColor: "#0891b2",
             headerShadowVisible: false,
             headerBackTitleVisible: false,
@@ -254,7 +298,7 @@ export default function Navigator() {
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
-          tabBarStyle: { 
+          tabBarStyle: {
             backgroundColor: "#020617",
             borderTopColor: "#1e293b",
             height: 60,
@@ -266,7 +310,7 @@ export default function Navigator() {
         }}
       >
         <Tab.Screen
-          name="Feed"
+          name="Trang chủ"
           component={HomeScreen}
           options={{
             tabBarIcon: ({ color }) => (
@@ -275,7 +319,7 @@ export default function Navigator() {
           }}
         />
         <Tab.Screen
-          name="Explore"
+          name="Khám phá"
           component={ExploreScreen}
           options={{
             tabBarIcon: ({ color }) => (
@@ -284,7 +328,7 @@ export default function Navigator() {
           }}
         />
         <Tab.Screen
-          name="Message"
+          name="Tin nhắn"
           component={MessageScreen}
           options={{
             tabBarIcon: ({ color }) => (
@@ -293,7 +337,7 @@ export default function Navigator() {
           }}
         />
         <Tab.Screen
-          name="Profile"
+          name="Hồ sơ"
           component={ProfileScreen}
           options={{
             tabBarIcon: ({ color }) => (

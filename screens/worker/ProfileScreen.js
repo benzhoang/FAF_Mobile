@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Image, RefreshControl, Alert, Platform } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+  Image,
+  RefreshControl,
+  Alert,
+  Platform,
+} from "react-native";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getCurrentUserProfile } from "../../service/api";
@@ -46,8 +57,8 @@ export default function ProfileScreen({ navigation }) {
   const handleLogout = async () => {
     Alert.alert("Đăng xuất", "Bạn có chắc chắn muốn đăng xuất?", [
       { text: "Hủy", style: "cancel" },
-      { 
-        text: "Đăng xuất", 
+      {
+        text: "Đăng xuất",
         onPress: async () => {
           try {
             await AsyncStorage.removeItem("token");
@@ -59,7 +70,7 @@ export default function ProfileScreen({ navigation }) {
             console.error("Logout error:", err);
             navigation.navigate("Login");
           }
-        } 
+        },
       },
     ]);
   };
@@ -76,12 +87,14 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <ScrollView 
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         contentContainerStyle={styles.scrollContent}
       >
         {/* Wallet Section */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.walletCard}
           onPress={() => navigation.navigate("Wallet")}
         >
@@ -90,10 +103,16 @@ export default function ProfileScreen({ navigation }) {
               <FontAwesome name="google-wallet" size={20} color={CYAN_ACCENT} />
               <Text style={styles.walletLabel}>VÍ FAF_CREDITS</Text>
             </View>
-            <FontAwesome name="chevron-right" size={12} color={TEXT_SECONDARY} />
+            <FontAwesome
+              name="chevron-right"
+              size={12}
+              color={TEXT_SECONDARY}
+            />
           </View>
           <View style={styles.walletBalanceRow}>
-            <Text style={styles.walletBalance}>{user?.balance_points?.toLocaleString() || 0}</Text>
+            <Text style={styles.walletBalance}>
+              {user?.balance_points?.toLocaleString() || 0}
+            </Text>
             <Text style={styles.walletCurrency}>CRED</Text>
             <View style={styles.depositLabel}>
               <Text style={styles.depositText}>NẠP TIỀN</Text>
@@ -103,7 +122,11 @@ export default function ProfileScreen({ navigation }) {
 
         {/* Profile Info Section */}
         {loading && !refreshing ? (
-          <ActivityIndicator size="large" color={CYAN_ACCENT} style={{ marginTop: 50 }} />
+          <ActivityIndicator
+            size="large"
+            color={CYAN_ACCENT}
+            style={{ marginTop: 50 }}
+          />
         ) : (
           <>
             {/* Profile Header */}
@@ -111,67 +134,79 @@ export default function ProfileScreen({ navigation }) {
               <View style={styles.avatarWrap}>
                 <View style={styles.avatar}>
                   {user?.avatar ? (
-                    <Image source={{ uri: user.avatar }} style={styles.avatarImage} />
+                    <Image
+                      source={{ uri: user.avatar }}
+                      style={styles.avatarImage}
+                    />
                   ) : (
-                    <Text style={styles.avatarInitial}>{user?.full_name?.charAt(0) || "U"}</Text>
+                    <Text style={styles.avatarInitial}>
+                      {user?.full_name?.charAt(0) || "U"}
+                    </Text>
                   )}
                 </View>
-                <TouchableOpacity style={styles.editBadge} onPress={() => navigation.navigate("EditProfile")}>
+                <TouchableOpacity
+                  style={styles.editBadge}
+                  onPress={() => navigation.navigate("EditProfile")}
+                >
                   <Ionicons name="pencil" size={12} color="#FFF" />
                 </TouchableOpacity>
               </View>
-              <Text style={styles.userName}>{user?.full_name || "User Name"}</Text>
-              <Text style={styles.userEmail}>{user?.email || "user@example.com"}</Text>
-              
+              <Text style={styles.userName}>
+                {user?.full_name || "User Name"}
+              </Text>
+              <Text style={styles.userEmail}>
+                {user?.email || "user@example.com"}
+              </Text>
+
               <View style={styles.roleTag}>
-                <Text style={styles.roleText}>{user?.role?.toUpperCase() || "WORKER"}</Text>
+                <Text style={styles.roleText}>
+                  {user?.role?.toUpperCase() || "WORKER"}
+                </Text>
               </View>
             </View>
 
             {/* Menu Items */}
             <View style={styles.menuGroup}>
               <Text style={styles.groupTitle}>Hoạt động</Text>
-              <MenuItem 
-                icon="document-text-outline" 
-                label="Công việc đã ứng tuyển" 
-                color={CYAN_ACCENT} 
-                onPress={() => navigation.navigate("MyProposals")} 
+              <MenuItem
+                icon="document-text-outline"
+                label="Công việc đã ứng tuyển"
+                color={CYAN_ACCENT}
+                onPress={() => navigation.navigate("MyProposals")}
               />
-              <MenuItem 
-                icon="briefcase-outline" 
-                label="Lịch sử công việc" 
-                color={CYAN_ACCENT} 
-                onPress={() => navigation.navigate("WorkHistory")} 
+              <MenuItem
+                icon="briefcase-outline"
+                label="Lịch sử công việc"
+                color={CYAN_ACCENT}
+                onPress={() => navigation.navigate("WorkHistory")}
               />
-              <MenuItem 
-                icon="notifications-outline" 
-                label="Thông báo" 
+              <MenuItem
+                icon="notifications-outline"
+                label="Thông báo"
                 color={AMBER}
-                onPress={() => navigation.navigate("Notification")} 
-              />
-              <MenuItem 
-                icon="chatbox-outline" 
-                label="Tin nhắn" 
-                color={EMERALD}
-                onPress={() => navigation.navigate("Message")} 
+                onPress={() => navigation.navigate("Notification")}
               />
             </View>
 
             <View style={styles.menuGroup}>
               <Text style={styles.groupTitle}>Tài khoản</Text>
-              <MenuItem icon="person-outline" label="Chỉnh sửa hồ sơ" onPress={() => navigation.navigate("EditProfile")} />
-              <MenuItem 
-                icon="lock-closed-outline" 
-                label="Bảo mật & Mật khẩu" 
-                onPress={() => navigation.navigate("ChangePassword")} 
+              <MenuItem
+                icon="person-outline"
+                label="Chỉnh sửa hồ sơ"
+                onPress={() => navigation.navigate("EditProfile")}
               />
-              
-              {user?.role === 'admin' && (
-                <MenuItem 
-                  icon="people-outline" 
-                  label="Quản lý người dùng (Admin)" 
+              <MenuItem
+                icon="lock-closed-outline"
+                label="Bảo mật & Mật khẩu"
+                onPress={() => navigation.navigate("ChangePassword")}
+              />
+
+              {user?.role === "admin" && (
+                <MenuItem
+                  icon="people-outline"
+                  label="Quản lý người dùng (Admin)"
                   color={AMBER}
-                  onPress={() => navigation.navigate("AdminUserManagement")} 
+                  onPress={() => navigation.navigate("AdminUserManagement")}
                 />
               )}
             </View>
@@ -180,14 +215,20 @@ export default function ProfileScreen({ navigation }) {
             {user?.education?.length > 0 && (
               <View style={styles.cvSection}>
                 <View style={styles.cvHeader}>
-                  <Ionicons name="school-outline" size={18} color={CYAN_ACCENT} />
+                  <Ionicons
+                    name="school-outline"
+                    size={18}
+                    color={CYAN_ACCENT}
+                  />
                   <Text style={styles.cvTitle}>Học vấn</Text>
                 </View>
                 {user.education.map((edu, idx) => (
                   <View key={idx} style={styles.cvItem}>
                     <Text style={styles.cvItemTitle}>{edu.school}</Text>
                     <Text style={styles.cvItemSub}>{edu.degree}</Text>
-                    <Text style={styles.cvItemDate}>{edu.start_year} - {edu.end_year}</Text>
+                    <Text style={styles.cvItemDate}>
+                      {edu.start_year} - {edu.end_year}
+                    </Text>
                   </View>
                 ))}
               </View>
@@ -197,15 +238,25 @@ export default function ProfileScreen({ navigation }) {
             {user?.experience?.length > 0 && (
               <View style={styles.cvSection}>
                 <View style={styles.cvHeader}>
-                  <Ionicons name="briefcase-outline" size={18} color={EMERALD} />
-                  <Text style={[styles.cvTitle, { color: EMERALD }]}>Kinh nghiệm</Text>
+                  <Ionicons
+                    name="briefcase-outline"
+                    size={18}
+                    color={EMERALD}
+                  />
+                  <Text style={[styles.cvTitle, { color: EMERALD }]}>
+                    Kinh nghiệm
+                  </Text>
                 </View>
                 {user.experience.map((exp, idx) => (
                   <View key={idx} style={styles.cvItem}>
                     <Text style={styles.cvItemTitle}>{exp.company}</Text>
                     <Text style={styles.cvItemSub}>{exp.role}</Text>
-                    <Text style={styles.cvItemDate}>{exp.start_date} - {exp.end_date}</Text>
-                    {exp.description && <Text style={styles.cvItemDesc}>{exp.description}</Text>}
+                    <Text style={styles.cvItemDate}>
+                      {exp.start_date} - {exp.end_date}
+                    </Text>
+                    {exp.description && (
+                      <Text style={styles.cvItemDesc}>{exp.description}</Text>
+                    )}
                   </View>
                 ))}
               </View>
@@ -216,20 +267,35 @@ export default function ProfileScreen({ navigation }) {
               <View style={styles.cvSection}>
                 <View style={styles.cvHeader}>
                   <Ionicons name="layers-outline" size={18} color={AMBER} />
-                  <Text style={[styles.cvTitle, { color: AMBER }]}>Dự án (Portfolio)</Text>
+                  <Text style={[styles.cvTitle, { color: AMBER }]}>
+                    Dự án (Portfolio)
+                  </Text>
                 </View>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.portfolioScroll}>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.portfolioScroll}
+                >
                   {user.portfolio.map((item, idx) => (
                     <TouchableOpacity key={idx} style={styles.portfolioCard}>
                       {item.image_url ? (
-                        <Image source={{ uri: item.image_url }} style={styles.portfolioImage} />
+                        <Image
+                          source={{ uri: item.image_url }}
+                          style={styles.portfolioImage}
+                        />
                       ) : (
                         <View style={styles.portfolioPlaceholder}>
-                          <Ionicons name="image-outline" size={30} color={TEXT_MUTED} />
+                          <Ionicons
+                            name="image-outline"
+                            size={30}
+                            color={TEXT_MUTED}
+                          />
                         </View>
                       )}
                       <View style={styles.portfolioOverlay}>
-                        <Text style={styles.portfolioTitle} numberOfLines={1}>{item.title}</Text>
+                        <Text style={styles.portfolioTitle} numberOfLines={1}>
+                          {item.title}
+                        </Text>
                       </View>
                     </TouchableOpacity>
                   ))}
@@ -247,7 +313,9 @@ export default function ProfileScreen({ navigation }) {
               <Text style={styles.logoutText}>Đăng xuất</Text>
             </TouchableOpacity>
 
-            <Text style={styles.versionText}>Phiên bản 1.0.0 (Worker Edition)</Text>
+            <Text style={styles.versionText}>
+              Phiên bản 1.0.0 (Worker Edition)
+            </Text>
           </>
         )}
       </ScrollView>
@@ -343,6 +411,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     letterSpacing: 1.5,
     marginBottom: 12,
+    marginTop: 20,
     marginLeft: 10,
   },
   menuItem: {
@@ -436,7 +505,7 @@ const styles = StyleSheet.create({
   cvItemDate: {
     fontSize: 11,
     color: TEXT_MUTED,
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
   },
   cvItemDesc: {
     fontSize: 12,
@@ -451,7 +520,7 @@ const styles = StyleSheet.create({
   walletCard: {
     backgroundColor: BG_SURFACE,
     marginHorizontal: 20,
-    marginTop: 20,
+    marginTop: 40,
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
@@ -543,5 +612,5 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#FFF",
     textTransform: "uppercase",
-  }
+  },
 });

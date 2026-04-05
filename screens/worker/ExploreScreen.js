@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator, RefreshControl, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+  RefreshControl,
+  ScrollView,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { getJobs } from "../../service/api";
 
@@ -69,16 +79,19 @@ export default function ExploreScreen({ navigation }) {
         </View>
         <Text style={styles.priceText}>{getFormatPrice(item.budget)}</Text>
       </View>
-      
-      <Text style={styles.jobTitle} numberOfLines={1}>{item.title}</Text>
+
+      <Text style={styles.jobTitle} numberOfLines={1}>
+        {item.title}
+      </Text>
       <Text style={styles.jobInfo} numberOfLines={1}>
-        {item.job_type === "SHORT_TERM" ? "Short-term" : "Long-term"} • {item.location || "Remote"}
+        {item.job_type === "SHORT_TERM" ? "Ngắn hạn" : "Dài hạn"} •{" "}
+        {item.location || "Từ xa"}
       </Text>
 
       <View style={styles.jobCardFooter}>
         <View style={styles.verifiedBox}>
           <Ionicons name="shield-checkmark" size={14} color={EMERALD} />
-          <Text style={styles.verifiedText}>Protected</Text>
+          <Text style={styles.verifiedText}>Đã được bảo vệ</Text>
         </View>
         <Ionicons name="chevron-forward" size={18} color={CYAN_ACCENT} />
       </View>
@@ -91,7 +104,12 @@ export default function ExploreScreen({ navigation }) {
       <View style={styles.searchHeader}>
         <Text style={styles.headerTitle}>Khám phá công việc</Text>
         <View style={styles.searchBarWrapper}>
-          <Ionicons name="search" size={20} color={TEXT_MUTED} style={styles.searchIcon} />
+          <Ionicons
+            name="search"
+            size={20}
+            color={TEXT_MUTED}
+            style={styles.searchIcon}
+          />
           <TextInput
             style={styles.searchInput}
             placeholder="Tìm theo tiêu đề, kỹ năng..."
@@ -104,24 +122,58 @@ export default function ExploreScreen({ navigation }) {
 
       {/* Filter Tabs */}
       <View style={styles.filterContainer}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterScroll}>
-          <TouchableOpacity 
-            style={[styles.filterBtn, jobType === "ALL" && styles.filterBtnActive]}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filterScroll}
+        >
+          <TouchableOpacity
+            style={[
+              styles.filterBtn,
+              jobType === "ALL" && styles.filterBtnActive,
+            ]}
             onPress={() => setJobType("ALL")}
           >
-            <Text style={[styles.filterText, jobType === "ALL" && styles.filterTextActive]}>Tất cả</Text>
+            <Text
+              style={[
+                styles.filterText,
+                jobType === "ALL" && styles.filterTextActive,
+              ]}
+            >
+              Tất cả
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.filterBtn, jobType === "SHORT_TERM" && styles.filterBtnActive]}
+          <TouchableOpacity
+            style={[
+              styles.filterBtn,
+              jobType === "SHORT_TERM" && styles.filterBtnActive,
+            ]}
             onPress={() => setJobType("SHORT_TERM")}
           >
-            <Text style={[styles.filterText, jobType === "SHORT_TERM" && styles.filterTextActive]}>Ngắn hạn</Text>
+            <Text
+              style={[
+                styles.filterText,
+                jobType === "SHORT_TERM" && styles.filterTextActive,
+              ]}
+            >
+              Ngắn hạn
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.filterBtn, jobType === "LONG_TERM" && styles.filterBtnActive]}
+          <TouchableOpacity
+            style={[
+              styles.filterBtn,
+              jobType === "LONG_TERM" && styles.filterBtnActive,
+            ]}
             onPress={() => setJobType("LONG_TERM")}
           >
-            <Text style={[styles.filterText, jobType === "LONG_TERM" && styles.filterTextActive]}>Dài hạn</Text>
+            <Text
+              style={[
+                styles.filterText,
+                jobType === "LONG_TERM" && styles.filterTextActive,
+              ]}
+            >
+              Dài hạn
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
@@ -132,10 +184,20 @@ export default function ExploreScreen({ navigation }) {
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderJobCard}
         contentContainerStyle={styles.listContainer}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={CYAN_ACCENT} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={CYAN_ACCENT}
+          />
+        }
         ListEmptyComponent={
           loading ? (
-            <ActivityIndicator size="large" color={CYAN_ACCENT} style={{ marginTop: 40 }} />
+            <ActivityIndicator
+              size="large"
+              color={CYAN_ACCENT}
+              style={{ marginTop: 40 }}
+            />
           ) : (
             <View style={styles.emptyState}>
               <Ionicons name="search-outline" size={64} color={TEXT_MUTED} />
