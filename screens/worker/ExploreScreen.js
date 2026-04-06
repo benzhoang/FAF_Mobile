@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   FlatList,
@@ -11,6 +10,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import SearchBar from "../../components/SearchBar";
 import { getJobs } from "../../service/api";
 
 const BG_BASE = "#020617";
@@ -103,21 +103,17 @@ export default function ExploreScreen({ navigation }) {
       {/* Header & Search */}
       <View style={styles.searchHeader}>
         <Text style={styles.headerTitle}>Khám phá công việc</Text>
-        <View style={styles.searchBarWrapper}>
-          <Ionicons
-            name="search"
-            size={20}
-            color={TEXT_MUTED}
-            style={styles.searchIcon}
-          />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Tìm theo tiêu đề, kỹ năng..."
-            placeholderTextColor={TEXT_MUTED}
-            value={search}
-            onChangeText={setSearch}
-          />
-        </View>
+        <SearchBar
+          placeholder="Tìm theo tiêu đề, kỹ năng..."
+          value={search}
+          onChangeText={setSearch}
+          editable
+          showFilter={false}
+          iconColor={TEXT_MUTED}
+          placeholderTextColor={TEXT_MUTED}
+          containerStyle={styles.searchBarWrapper}
+          inputStyle={styles.searchInput}
+        />
       </View>
 
       {/* Filter Tabs */}
@@ -230,22 +226,20 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   searchBarWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
     backgroundColor: BG_BASE,
     borderRadius: 12,
     paddingHorizontal: 12,
+    paddingVertical: 0,
+    marginBottom: 0,
     borderWidth: 1,
     borderColor: "#1e293b",
-  },
-  searchIcon: {
-    marginRight: 8,
   },
   searchInput: {
     flex: 1,
     height: 44,
     color: TEXT_PRIMARY,
     fontSize: 15,
+    padding: 0,
   },
   filterContainer: {
     paddingVertical: 12,

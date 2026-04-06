@@ -2,29 +2,34 @@ import React from "react";
 import { View, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const GRAY_LIGHT = "#9CA3AF";
-
 export default function SearchBar({
   placeholder = "Search gigs, tasks, companies...",
   value,
   onChangeText,
   onFilterPress,
-  editable = false,
+  editable = true,
+  showFilter = false,
+  iconColor = "#9CA3AF",
+  placeholderTextColor = "#9CA3AF",
+  containerStyle,
+  inputStyle,
 }) {
   return (
-    <View style={styles.searchBar}>
-      <Ionicons name="search" size={20} color={GRAY_LIGHT} />
+    <View style={[styles.searchBar, containerStyle]}>
+      <Ionicons name="search" size={20} color={iconColor} />
       <TextInput
-        style={styles.searchInput}
+        style={[styles.searchInput, inputStyle]}
         placeholder={placeholder}
-        placeholderTextColor={GRAY_LIGHT}
+        placeholderTextColor={placeholderTextColor}
         value={value}
         onChangeText={onChangeText}
         editable={editable}
       />
-      <TouchableOpacity onPress={onFilterPress}>
-        <Ionicons name="options-outline" size={22} color={GRAY_LIGHT} />
-      </TouchableOpacity>
+      {showFilter && (
+        <TouchableOpacity onPress={onFilterPress}>
+          <Ionicons name="options-outline" size={22} color={iconColor} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

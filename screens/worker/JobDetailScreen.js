@@ -1,8 +1,32 @@
 import React, { useState, useLayoutEffect, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Modal, TextInput, Alert, KeyboardAvoidingView, Platform } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+  Modal,
+  Linking,
+  Platform,
+} from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import { getJobById, createProposal, getMyProposals, getContractByJob, requestContractOtp, signContract, submitCheckpoint, uploadFile } from "../../service/api";
+import ResourcePreviewModal from "../../components/modal/ResourcePreviewModal";
+import ApplicationModal from "../../components/modal/ApplicationModal";
+import ContractSigningModal from "../../components/modal/ContractSigningModal";
+import SubmissionModal from "../../components/modal/SubmissionModal";
+import {
+  getJobById,
+  createProposal,
+  getMyProposals,
+  getContractByJob,
+  requestContractOtp,
+  signContract,
+  submitCheckpoint,
+  uploadFile,
+} from "../../service/api";
 import * as ImagePicker from "expo-image-picker";
 
 const BG_BASE = "#020617";
@@ -19,12 +43,12 @@ export default function JobDetailScreen() {
   const route = useRoute();
   const navigation = useNavigation();
   const { jobId } = route.params || {};
-  
+
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [favorited, setFavorited] = useState(false);
   const [myProposal, setMyProposal] = useState(null);
-  
+
   const [applyModalVisible, setApplyModalVisible] = useState(false);
   const [proposalData, setProposalData] = useState({
     total_amount: "",
@@ -32,13 +56,13 @@ export default function JobDetailScreen() {
     cover_letter: "",
   });
   const [submitting, setSubmitting] = useState(false);
-  
+
   // Contract-related states
   const [contract, setContract] = useState(null);
   const [signingModalVisible, setSigningModalVisible] = useState(false);
   const [signatureOtp, setSignatureOtp] = useState("");
   const [signing, setSigning] = useState(false);
-  
+
   // Work submission states
   const [submitWorkModalVisible, setSubmitWorkModalVisible] = useState(false);
   const [selectedCheckpoint, setSelectedCheckpoint] = useState(null);
@@ -53,12 +77,15 @@ export default function JobDetailScreen() {
     title: "",
     message: "",
     type: "success",
-    onConfirm: null
+    onConfirm: null,
   });
 
   // File states
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadingFile, setUploadingFile] = useState(false);
+
+  // Resource preview (lightbox)
+  const [resourcePreviewIndex, setResourcePreviewIndex] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,19 +96,28 @@ export default function JobDetailScreen() {
         if (jobResult.success) {
           setJob(jobResult.data);
           if (jobResult.data.budget) {
-            setProposalData(prev => ({ ...prev, total_amount: jobResult.data.budget.toString() }));
+            setProposalData((prev) => ({
+              ...prev,
+              total_amount: jobResult.data.budget.toString(),
+            }));
           }
         } else {
-          showCustomAlert("Lỗi", jobResult.error || "Không thể lấy thông tin công việc", "error");
+          showCustomAlert(
+            "Lỗi",
+            jobResult.error || "Không thể lấy thông tin công việc",
+            "error",
+          );
         }
 
         // 2. Fetch Proposals to check if already applied
         const proposalsResult = await getMyProposals();
         if (proposalsResult.success) {
-          const existing = proposalsResult.data.find(p => p.job_id === parseInt(jobId));
+          const existing = proposalsResult.data.find(
+            (p) => p.job_id === parseInt(jobId),
+          );
           if (existing) {
             setMyProposal(existing);
-            
+
             // 3. If accepted, fetch contract
             if (existing.status === "ACCEPTED") {
               const contractRes = await getContractByJob(jobId);
@@ -105,12 +141,18 @@ export default function JobDetailScreen() {
       headerTransparent: true,
       headerTitle: "",
       headerLeft: () => (
-        <TouchableOpacity style={styles.headerIconBtn} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.headerIconBtn}
+          onPress={() => navigation.goBack()}
+        >
           <Ionicons name="chevron-back" size={24} color={TEXT_PRIMARY} />
         </TouchableOpacity>
       ),
       headerRight: () => (
-        <TouchableOpacity style={styles.headerIconBtn} onPress={() => setFavorited(!favorited)}>
+        <TouchableOpacity
+          style={styles.headerIconBtn}
+          onPress={() => setFavorited(!favorited)}
+        >
           <Ionicons
             name={favorited ? "heart" : "heart-outline"}
             size={24}
@@ -122,8 +164,16 @@ export default function JobDetailScreen() {
   }, [navigation, favorited]);
 
   const handleApply = async () => {
-    if (!proposalData.total_amount || !proposalData.expected_days || !proposalData.cover_letter) {
-      showCustomAlert("Thông báo", "Vui lòng điền đầy đủ thông tin ứng tuyển", "error");
+    if (
+      !proposalData.total_amount ||
+      !proposalData.expected_days ||
+      !proposalData.cover_letter
+    ) {
+      showCustomAlert(
+        "Thông báo",
+        "Vui lòng điền đầy đủ thông tin ứng tuyển",
+        "error",
+      );
       return;
     }
 
@@ -137,10 +187,15 @@ export default function JobDetailScreen() {
       });
 
       if (result.success) {
-        showCustomAlert("Thành công", "Bạn đã gửi ứng tuyển cho công việc này!", "success", () => {
+        showCustomAlert(
+          "Thành công",
+          "Bạn đã gửi ứng tuyển cho công việc này!",
+          "success",
+          () => {
             setApplyModalVisible(false);
             navigation.goBack();
-        });
+          },
+        );
       } else {
         showCustomAlert("Lỗi", result.error || "Ứng tuyển thất bại", "error");
       }
@@ -155,104 +210,143 @@ export default function JobDetailScreen() {
     if (!contract) return;
     setSigning(true);
     try {
-        const res = await requestContractOtp(contract.id);
-        if (res.success) {
-            showCustomAlert("Xác thực", "Mã xác thực ký hợp đồng đã được gửi tới email của bạn.", "success", () => {
-                setSigningModalVisible(true);
-            });
-        } else {
-            showCustomAlert("Lỗi", res.error || "Không thể gửi mã xác thực.", "error");
-        }
+      const res = await requestContractOtp(contract.id);
+      if (res.success) {
+        showCustomAlert(
+          "Xác thực",
+          "Mã xác thực ký hợp đồng đã được gửi tới email của bạn.",
+          "success",
+          () => {
+            setSigningModalVisible(true);
+          },
+        );
+      } else {
+        showCustomAlert(
+          "Lỗi",
+          res.error || "Không thể gửi mã xác thực.",
+          "error",
+        );
+      }
     } catch (err) {
-        showCustomAlert("Lỗi", "Có lỗi xảy ra khi yêu cầu mã xác thực.", "error");
+      showCustomAlert("Lỗi", "Có lỗi xảy ra khi yêu cầu mã xác thực.", "error");
     } finally {
-        setSigning(false);
+      setSigning(false);
     }
   };
 
   const handleSignContract = async () => {
     if (!signatureOtp) {
-        showCustomAlert("Thông báo", "Vui lòng nhập mã OTP.", "error");
-        return;
+      showCustomAlert("Thông báo", "Vui lòng nhập mã OTP.", "error");
+      return;
     }
     setSigning(true);
     try {
-        const res = await signContract(contract.id, signatureOtp);
-        if (res.success) {
-            showCustomAlert("Thành công", "Bạn đã ký hợp đồng. Chúc mừng bạn chính thức bắt đầu công việc!", "success", () => {
-                setSigningModalVisible(false);
-                setLoading(true);
-                getJobById(jobId).then(jr => jr.success && setJob(jr.data));
-                getContractByJob(jobId).then(cr => cr.success && setContract(cr.data)).finally(() => setLoading(false));
-            });
-        } else {
-            showCustomAlert("Lỗi", res.error || "Mã OTP không đúng hoặc hợp đồng không hợp lệ.", "error");
-        }
+      const res = await signContract(contract.id, signatureOtp);
+      if (res.success) {
+        showCustomAlert(
+          "Thành công",
+          "Bạn đã ký hợp đồng. Chúc mừng bạn chính thức bắt đầu công việc!",
+          "success",
+          () => {
+            setSigningModalVisible(false);
+            setLoading(true);
+            getJobById(jobId).then((jr) => jr.success && setJob(jr.data));
+            getContractByJob(jobId)
+              .then((cr) => cr.success && setContract(cr.data))
+              .finally(() => setLoading(false));
+          },
+        );
+      } else {
+        showCustomAlert(
+          "Lỗi",
+          res.error || "Mã OTP không đúng hoặc hợp đồng không hợp lệ.",
+          "error",
+        );
+      }
     } catch (err) {
-        showCustomAlert("Lỗi", "Có lỗi xảy ra khi ký hợp đồng.", "error");
+      showCustomAlert("Lỗi", "Có lỗi xảy ra khi ký hợp đồng.", "error");
     } finally {
-        setSigning(false);
+      setSigning(false);
     }
   };
 
   const handlePickFile = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'],
-        allowsEditing: false,
-        quality: 1,
+      mediaTypes: ["images"],
+      allowsEditing: false,
+      quality: 1,
     });
 
     if (!result.canceled) {
-        setSelectedFile(result.assets[0]);
+      setSelectedFile(result.assets[0]);
     }
   };
 
   const handleSubmitWork = async () => {
     if (!submissionData.work_link && !selectedFile) {
-        showCustomAlert("Thông báo", "Vui lòng cung cấp link bài làm hoặc tải ảnh đính kèm.", "error");
-        return;
+      showCustomAlert(
+        "Thông báo",
+        "Vui lòng cung cấp link bài làm hoặc tải ảnh đính kèm.",
+        "error",
+      );
+      return;
     }
-    
+
     setSubmitting(true);
     try {
-        let finalAttachment = submissionData.work_link;
-        
-        // Upload file if selected
-        if (selectedFile) {
-            setUploadingFile(true);
-            const uploadRes = await uploadFile(selectedFile.uri);
-            setUploadingFile(false);
-            if (uploadRes.success) {
-                finalAttachment = uploadRes.data.url;
-            } else {
-                showCustomAlert("Lỗi Upload", "Không thể tải file lên hệ thống. Vui lòng thử lại.", "error");
-                setSubmitting(false);
-                return;
-            }
-        }
+      let finalAttachment = submissionData.work_link;
 
-        const res = await submitCheckpoint(selectedCheckpoint.id, {
-            submission_url: finalAttachment,
-            submission_notes: submissionData.description || "Nộp bài làm qua Mobile"
-        });
-        if (res.success) {
-            showCustomAlert("Thành công", "Bạn đã nộp bài làm thành công. Đang chờ đối tác duyệt.", "success", () => {
-                setSubmitWorkModalVisible(false);
-                setSelectedFile(null);
-                getJobById(jobId).then(jr => jr.success && setJob(jr.data));
-            });
-        } else {
-            showCustomAlert("Lỗi", res.error || "Nộp bài làm thất bại.", "error");
-        }
-    } catch (err) {
-        showCustomAlert("Lỗi", "Có lỗi xảy ra khi nộp bài làm.", "error");
-    } finally {
-        setSubmitting(false);
+      // Upload file if selected
+      if (selectedFile) {
+        setUploadingFile(true);
+        const uploadRes = await uploadFile(selectedFile.uri);
         setUploadingFile(false);
+        if (uploadRes.success) {
+          finalAttachment = uploadRes.data.url;
+        } else {
+          showCustomAlert(
+            "Lỗi Upload",
+            "Không thể tải file lên hệ thống. Vui lòng thử lại.",
+            "error",
+          );
+          setSubmitting(false);
+          return;
+        }
+      }
+
+      const res = await submitCheckpoint(selectedCheckpoint.id, {
+        submission_url: finalAttachment,
+        submission_notes:
+          submissionData.description || "Nộp bài làm qua Mobile",
+      });
+      if (res.success) {
+        showCustomAlert(
+          "Thành công",
+          "Bạn đã nộp bài làm thành công. Đang chờ đối tác duyệt.",
+          "success",
+          () => {
+            setSubmitWorkModalVisible(false);
+            setSelectedFile(null);
+            getJobById(jobId).then((jr) => jr.success && setJob(jr.data));
+          },
+        );
+      } else {
+        showCustomAlert("Lỗi", res.error || "Nộp bài làm thất bại.", "error");
+      }
+    } catch (err) {
+      showCustomAlert("Lỗi", "Có lỗi xảy ra khi nộp bài làm.", "error");
+    } finally {
+      setSubmitting(false);
+      setUploadingFile(false);
     }
   };
 
-  const showCustomAlert = (title, message, type = "success", onConfirm = null) => {
+  const showCustomAlert = (
+    title,
+    message,
+    type = "success",
+    onConfirm = null,
+  ) => {
     setAlertConfig({ title, message, type, onConfirm });
     setAlertVisible(true);
   };
@@ -260,7 +354,32 @@ export default function JobDetailScreen() {
   const handleAlertOK = () => {
     setAlertVisible(false);
     if (alertConfig.onConfirm) {
-        alertConfig.onConfirm();
+      alertConfig.onConfirm();
+    }
+  };
+
+  const normalizeResourceUrl = (input) => {
+    if (typeof input === "string") return input.trim();
+    if (input && typeof input === "object") {
+      const candidate = input.url || input.uri || input.link || input.path;
+      return typeof candidate === "string" ? candidate.trim() : "";
+    }
+    return "";
+  };
+
+  const isVideoUrl = (url) => /\.(mp4|webm|ogg)(?:\?|#|$)/i.test(url);
+
+  const openExternalUrl = async (url) => {
+    try {
+      if (!url) return;
+      const canOpen = await Linking.canOpenURL(url);
+      if (!canOpen) {
+        showCustomAlert("Lỗi", "Không thể mở đường dẫn này.", "error");
+        return;
+      }
+      await Linking.openURL(url);
+    } catch {
+      showCustomAlert("Lỗi", "Không thể mở đường dẫn này.", "error");
     }
   };
 
@@ -271,10 +390,22 @@ export default function JobDetailScreen() {
 
   const getStatusStyle = (status) => {
     switch (status?.toUpperCase()) {
-      case "ACCEPTED": return { color: EMERALD, bg: EMERALD + "15", border: EMERALD + "30" };
-      case "REJECTED": return { color: "#f43f5e", bg: "#f43f5e" + "15", border: "#f43f5e" + "30" };
-      case "PENDING": return { color: AMBER, bg: AMBER + "15", border: AMBER + "30" };
-      default: return { color: TEXT_MUTED, bg: TEXT_MUTED + "15", border: TEXT_MUTED + "30" };
+      case "ACCEPTED":
+        return { color: EMERALD, bg: EMERALD + "15", border: EMERALD + "30" };
+      case "REJECTED":
+        return {
+          color: "#f43f5e",
+          bg: "#f43f5e" + "15",
+          border: "#f43f5e" + "30",
+        };
+      case "PENDING":
+        return { color: AMBER, bg: AMBER + "15", border: AMBER + "30" };
+      default:
+        return {
+          color: TEXT_MUTED,
+          bg: TEXT_MUTED + "15",
+          border: TEXT_MUTED + "30",
+        };
     }
   };
 
@@ -288,11 +419,15 @@ export default function JobDetailScreen() {
 
   if (!job) return null;
 
+  const resourceUrls = Array.isArray(job.resource_urls)
+    ? job.resource_urls.map(normalizeResourceUrl).filter(Boolean)
+    : [];
+
   return (
     <View style={styles.container}>
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent} 
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         {/* Banner / Hero Section */}
@@ -301,15 +436,17 @@ export default function JobDetailScreen() {
             <Text style={styles.categoryText}>{job.category_name}</Text>
           </View>
           <Text style={styles.title}>{job.title}</Text>
-          
+
           <View style={styles.metaRow}>
             <View style={styles.metaItem}>
               <Ionicons name="time-outline" size={16} color={CYAN_ACCENT} />
-              <Text style={styles.metaText}>{job.job_type === "SHORT_TERM" ? "Short-term" : "Long-term"}</Text>
+              <Text style={styles.metaText}>
+                {job.job_type === "SHORT_TERM" ? "Ngắn hạn" : "Dài hạn"}
+              </Text>
             </View>
             <View style={styles.metaItem}>
               <Ionicons name="location-outline" size={16} color={CYAN_ACCENT} />
-              <Text style={styles.metaText}>{job.location || "Remote"}</Text>
+              <Text style={styles.metaText}>{job.location || "Từ xa"}</Text>
             </View>
           </View>
         </View>
@@ -318,13 +455,15 @@ export default function JobDetailScreen() {
           {/* Budget Info */}
           <View style={styles.infoCard}>
             <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>Budget</Text>
+              <Text style={styles.infoLabel}>Ngân sách</Text>
               <Text style={styles.infoValue}>{getFormatPrice(job.budget)}</Text>
             </View>
             <View style={styles.divider} />
             <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>Timeline</Text>
-              <Text style={styles.infoValue}>{job.expected_duration || "N/A"}</Text>
+              <Text style={styles.infoLabel}>Thời gian</Text>
+              <Text style={styles.infoValue}>
+                {job.expected_duration || "N/A"}
+              </Text>
             </View>
           </View>
 
@@ -333,7 +472,10 @@ export default function JobDetailScreen() {
             <Ionicons name="shield-checkmark" size={28} color={EMERALD} />
             <View style={styles.secureTextContent}>
               <Text style={styles.secureTitle}>FAF Secure Escrow</Text>
-              <Text style={styles.secureDesc}>Thanh toán được giữ an toàn bởi FAF cho đến khi bạn hoàn thành công việc.</Text>
+              <Text style={styles.secureDesc}>
+                Thanh toán được giữ an toàn bởi FAF cho đến khi bạn hoàn thành
+                công việc.
+              </Text>
             </View>
           </View>
 
@@ -358,24 +500,70 @@ export default function JobDetailScreen() {
           )}
 
           {/* Resources */}
-          {job.resource_urls && job.resource_urls.length > 0 && (
+          {resourceUrls.length > 0 && (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Tài nguyên dự án</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.resourceScroll}>
-                {job.resource_urls.map((url, index) => {
-                    const isVideo = url.match(/\.(mp4|webm|ogg)$/i);
-                    return (
-                        <View key={index} style={styles.resourceItem}>
-                             <View style={styles.resourceBox}>
-                                {isVideo ? (
-                                    <Ionicons name="play-circle" size={32} color={CYAN_ACCENT + "80"} />
-                                ) : (
-                                    <Ionicons name="image-outline" size={32} color={CYAN_ACCENT + "80"} />
-                                )}
-                                <Text style={styles.resourceLabel}>{isVideo ? `Video ${index+1}` : `Ảnh ${index+1}`}</Text>
-                             </View>
+              <Text style={styles.sectionTitle}>Hình ảnh minh họa dự án</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.resourceScroll}
+              >
+                {resourceUrls.map((url, index) => {
+                  const isVideo = isVideoUrl(url);
+                  return (
+                    <TouchableOpacity
+                      key={`${url}-${index}`}
+                      activeOpacity={0.85}
+                      style={styles.resourceItem}
+                      onPress={() => {
+                        if (isVideo) openExternalUrl(url);
+                        else setResourcePreviewIndex(index);
+                      }}
+                    >
+                      <View style={styles.resourceCard}>
+                        {!isVideo ? (
+                          <Image
+                            source={{ uri: url }}
+                            style={styles.resourceThumb}
+                            resizeMode="cover"
+                          />
+                        ) : (
+                          <View style={styles.resourceVideoPlaceholder}>
+                            <Ionicons
+                              name="play-circle"
+                              size={36}
+                              color={CYAN_ACCENT + "70"}
+                            />
+                          </View>
+                        )}
+
+                        <View style={styles.resourceOverlay} />
+
+                        <View style={styles.resourceFooter}>
+                          <View style={styles.resourceDot} />
+                          <Text
+                            style={styles.resourceFooterText}
+                            numberOfLines={1}
+                          >
+                            {isVideo
+                              ? `REF_VID_${index + 1}`
+                              : `REF_${index + 1}.IMG`}
+                          </Text>
+                          <Ionicons
+                            name="open-outline"
+                            size={14}
+                            color={CYAN_ACCENT + "80"}
+                            style={{ marginLeft: 6 }}
+                          />
                         </View>
-                    );
+
+                        <View style={styles.resourceCornerTL} />
+                        <View style={styles.resourceCornerTR} />
+                        <View style={styles.resourceCornerBL} />
+                        <View style={styles.resourceCornerBR} />
+                      </View>
+                    </TouchableOpacity>
+                  );
                 })}
               </ScrollView>
             </View>
@@ -384,54 +572,99 @@ export default function JobDetailScreen() {
           {/* Checkpoints / Milestones / Work submission */}
           {job.checkpoints && job.checkpoints.length > 0 && (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>{contract?.status === 'ACTIVE' ? 'Tiến độ công việc' : 'Lộ trình dự án'}</Text>
+              <Text style={styles.sectionTitle}>
+                {contract?.status === "ACTIVE"
+                  ? "Tiến độ công việc"
+                  : "Lộ trình dự án"}
+              </Text>
               <View style={styles.milestonesList}>
                 {job.checkpoints.map((cp, index) => {
-                  const isSubmitted = cp.status === 'SUBMITTED' || cp.status === 'APPROVED';
+                  const isSubmitted =
+                    cp.status === "SUBMITTED" || cp.status === "APPROVED";
                   return (
                     <View key={cp.id || index} style={styles.milestoneItem}>
                       <View style={styles.milestoneLineWrap}>
-                          <View style={[styles.milestoneDot, cp.status === 'APPROVED' && { backgroundColor: EMERALD }]} />
-                          {index < job.checkpoints.length - 1 && <View style={styles.milestoneLine} />}
+                        <View
+                          style={[
+                            styles.milestoneDot,
+                            cp.status === "APPROVED" && {
+                              backgroundColor: EMERALD,
+                            },
+                          ]}
+                        />
+                        {index < job.checkpoints.length - 1 && (
+                          <View style={styles.milestoneLine} />
+                        )}
                       </View>
                       <View style={styles.milestoneContent}>
-                          <View style={styles.milestoneHeader}>
-                              <Text style={styles.milestoneTitle}>{cp.name}</Text>
-                              <View style={styles.milestoneBadgeRow}>
-                                  {cp.status === 'APPROVED' && (
-                                      <View style={[styles.miniBadge, { backgroundColor: EMERALD + '20' }]}>
-                                          <Text style={[styles.miniBadgeText, { color: EMERALD }]}>DONE</Text>
-                                      </View>
-                                  )}
-                                  <Text style={styles.milestoneAmount}>{getFormatPrice(cp.amount)}</Text>
+                        <View style={styles.milestoneHeader}>
+                          <Text style={styles.milestoneTitle}>{cp.name}</Text>
+                          <View style={styles.milestoneBadgeRow}>
+                            {cp.status === "APPROVED" && (
+                              <View
+                                style={[
+                                  styles.miniBadge,
+                                  { backgroundColor: EMERALD + "20" },
+                                ]}
+                              >
+                                <Text
+                                  style={[
+                                    styles.miniBadgeText,
+                                    { color: EMERALD },
+                                  ]}
+                                >
+                                  DONE
+                                </Text>
                               </View>
+                            )}
+                            <Text style={styles.milestoneAmount}>
+                              {getFormatPrice(cp.amount)}
+                            </Text>
                           </View>
-                          <Text style={styles.milestoneDesc}>{cp.description || "Không có mô tả"}</Text>
-                          
-                          {/* Work submission action */}
-                          {contract?.status === 'ACTIVE' && (
-                             <View style={styles.workActionArea}>
-                                {cp.status === 'PENDING' || cp.status === 'REJECTED' ? (
-                                    <TouchableOpacity 
-                                        style={styles.btnWorkAction} 
-                                        onPress={() => {
-                                            setSelectedCheckpoint(cp);
-                                            setSubmitWorkModalVisible(true);
-                                        }}
-                                    >
-                                        <Ionicons name="cloud-upload-outline" size={16} color={CYAN_ACCENT} />
-                                        <Text style={styles.btnWorkActionText}>{cp.status === 'REJECTED' ? 'Nộp lại bài làm' : 'Nộp bài làm'}</Text>
-                                    </TouchableOpacity>
-                                ) : (
-                                    <View style={styles.submittedInfo}>
-                                        <Ionicons name="time-outline" size={14} color={TEXT_MUTED} />
-                                        <Text style={styles.submittedText}>
-                                            {cp.status === 'SUBMITTED' ? 'Đã nộp, đang chờ duyệt' : 'Đối tác đã duyệt & thanh toán'}
-                                        </Text>
-                                    </View>
-                                )}
-                             </View>
-                          )}
+                        </View>
+                        <Text style={styles.milestoneDesc}>
+                          {cp.description || "Không có mô tả"}
+                        </Text>
+
+                        {/* Work submission action */}
+                        {contract?.status === "ACTIVE" && (
+                          <View style={styles.workActionArea}>
+                            {cp.status === "PENDING" ||
+                            cp.status === "REJECTED" ? (
+                              <TouchableOpacity
+                                style={styles.btnWorkAction}
+                                onPress={() => {
+                                  setSelectedCheckpoint(cp);
+                                  setSubmitWorkModalVisible(true);
+                                }}
+                              >
+                                <Ionicons
+                                  name="cloud-upload-outline"
+                                  size={16}
+                                  color={CYAN_ACCENT}
+                                />
+                                <Text style={styles.btnWorkActionText}>
+                                  {cp.status === "REJECTED"
+                                    ? "Nộp lại bài làm"
+                                    : "Nộp bài làm"}
+                                </Text>
+                              </TouchableOpacity>
+                            ) : (
+                              <View style={styles.submittedInfo}>
+                                <Ionicons
+                                  name="time-outline"
+                                  size={14}
+                                  color={TEXT_MUTED}
+                                />
+                                <Text style={styles.submittedText}>
+                                  {cp.status === "SUBMITTED"
+                                    ? "Đã nộp, đang chờ duyệt"
+                                    : "Đối tác đã duyệt & thanh toán"}
+                                </Text>
+                              </View>
+                            )}
+                          </View>
+                        )}
                       </View>
                     </View>
                   );
@@ -442,25 +675,37 @@ export default function JobDetailScreen() {
 
           <View style={styles.employerSection}>
             <Text style={styles.sectionTitle}>Nhà tuyển dụng</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.employerCard}
-              onPress={() => navigation.navigate("OtherProfile", { userId: job.client?.id })}
+              onPress={() =>
+                navigation.navigate("OtherProfile", { userId: job.client?.id })
+              }
             >
               <View style={styles.employerAvatar}>
                 <Text style={styles.avatarText}>
-                  {(job.client?.full_name || job.client?.email || "E").charAt(0).toUpperCase()}
+                  {(job.client?.full_name || job.client?.email || "E")
+                    .charAt(0)
+                    .toUpperCase()}
                 </Text>
               </View>
               <View style={styles.employerInfo}>
                 <View style={styles.nameRow}>
                   <Text style={styles.employerName}>
-                    {job.client?.full_name || job.client?.email?.split('@')[0] || "Employer"}
+                    {job.client?.full_name ||
+                      job.client?.email?.split("@")[0] ||
+                      "Employer"}
                   </Text>
-                  <Ionicons name="checkmark-circle" size={16} color={CYAN_ACCENT} />
+                  <Ionicons
+                    name="checkmark-circle"
+                    size={16}
+                    color={CYAN_ACCENT}
+                  />
                 </View>
                 <View style={styles.employerMeta}>
                   <Ionicons name="star" size={14} color={AMBER} />
-                  <Text style={styles.ratingText}>4.8 • Đã xác minh thanh toán</Text>
+                  <Text style={styles.ratingText}>
+                    4.8 • Đã xác minh thanh toán
+                  </Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -471,258 +716,168 @@ export default function JobDetailScreen() {
       {/* Action Footer or My Proposal Status */}
       <View style={styles.footer}>
         {myProposal ? (
-            <View style={styles.appliedCard}>
-                <View style={styles.appliedHeader}>
-                    <View style={styles.appliedTag}>
-                        <Ionicons name="checkmark-circle" size={14} color={EMERALD} />
-                        <Text style={styles.appliedTagText}>BẠN ĐÃ ỨNG TUYỂN</Text>
-                    </View>
-                    <View style={[styles.statusBadge, { backgroundColor: getStatusStyle(myProposal.status).bg, borderColor: getStatusStyle(myProposal.status).border }]}>
-                        <Text style={[styles.statusText, { color: getStatusStyle(myProposal.status).color }]}>{myProposal.status}</Text>
-                    </View>
-                </View>
-                <Text style={styles.appliedPrice}>Giá đề xuất: <Text style={{ color: AMBER }}>{getFormatPrice(myProposal.proposed_price)}</Text></Text>
-                <Text style={styles.appliedCoverLetter} numberOfLines={2}>"{myProposal.cover_letter}"</Text>
-                
-                {myProposal.status === 'ACCEPTED' && contract?.status === 'PENDING' && (
-                    <TouchableOpacity style={styles.signContractBtn} onPress={handleRequestSign}>
-                        <Ionicons name="document-text" size={20} color="#000" />
-                        <Text style={styles.signContractText}>XEM & KÝ HỢP ĐỒNG</Text>
-                    </TouchableOpacity>
-                )}
-
-                {contract?.status === 'ACTIVE' && (
-                    <View style={styles.activeWorkFlag}>
-                        <Ionicons name="briefcase" size={16} color={EMERALD} />
-                        <Text style={styles.activeWorkText}>Hợp đồng đang thực hiện - Vui lòng nộp bài làm ở trên</Text>
-                    </View>
-                )}
-
-                {!contract && myProposal.status === 'ACCEPTED' && (
-                    <Text style={styles.waitingContractText}>Đang chờ nhà tuyển dụng tạo hợp đồng...</Text>
-                )}
-
-                <TouchableOpacity style={styles.viewProposalBtn} onPress={() => navigation.navigate("MyProposals")}>
-                    <Text style={styles.viewProposalText}>Xem tất cả ứng tuyển</Text>
-                </TouchableOpacity>
+          <View style={styles.appliedCard}>
+            <View style={styles.appliedHeader}>
+              <View style={styles.appliedTag}>
+                <Ionicons name="checkmark-circle" size={14} color={EMERALD} />
+                <Text style={styles.appliedTagText}>BẠN ĐÃ ỨNG TUYỂN</Text>
+              </View>
+              <View
+                style={[
+                  styles.statusBadge,
+                  {
+                    backgroundColor: getStatusStyle(myProposal.status).bg,
+                    borderColor: getStatusStyle(myProposal.status).border,
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.statusText,
+                    { color: getStatusStyle(myProposal.status).color },
+                  ]}
+                >
+                  {myProposal.status}
+                </Text>
+              </View>
             </View>
-        ) : (
-            <TouchableOpacity style={styles.applyBtn} onPress={() => setApplyModalVisible(true)}>
-                <Text style={styles.applyBtnText}>Ứng tuyển ngay</Text>
+            <Text style={styles.appliedPrice}>
+              Giá đề xuất:{" "}
+              <Text style={{ color: AMBER }}>
+                {getFormatPrice(myProposal.proposed_price)}
+              </Text>
+            </Text>
+            <Text style={styles.appliedCoverLetter} numberOfLines={2}>
+              "{myProposal.cover_letter}"
+            </Text>
+
+            {myProposal.status === "ACCEPTED" &&
+              contract?.status === "PENDING" && (
+                <TouchableOpacity
+                  style={styles.signContractBtn}
+                  onPress={handleRequestSign}
+                >
+                  <Ionicons name="document-text" size={20} color="#000" />
+                  <Text style={styles.signContractText}>XEM & KÝ HỢP ĐỒNG</Text>
+                </TouchableOpacity>
+              )}
+
+            {contract?.status === "ACTIVE" && (
+              <View style={styles.activeWorkFlag}>
+                <Ionicons name="briefcase" size={16} color={EMERALD} />
+                <Text style={styles.activeWorkText}>
+                  Hợp đồng đang thực hiện - Vui lòng nộp bài làm ở trên
+                </Text>
+              </View>
+            )}
+
+            {!contract && myProposal.status === "ACCEPTED" && (
+              <Text style={styles.waitingContractText}>
+                Đang chờ nhà tuyển dụng tạo hợp đồng...
+              </Text>
+            )}
+
+            <TouchableOpacity
+              style={styles.viewProposalBtn}
+              onPress={() => navigation.navigate("MyProposals")}
+            >
+              <Text style={styles.viewProposalText}>Xem tất cả ứng tuyển</Text>
             </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={styles.applyBtn}
+            onPress={() => setApplyModalVisible(true)}
+          >
+            <Text style={styles.applyBtnText}>Ứng tuyển ngay</Text>
+          </TouchableOpacity>
         )}
       </View>
 
+      <ResourcePreviewModal
+        visible={resourcePreviewIndex !== null}
+        index={resourcePreviewIndex}
+        urls={resourceUrls}
+        onClose={() => setResourcePreviewIndex(null)}
+        closeIconColor={TEXT_PRIMARY}
+      />
+
       {/* Application Modal */}
-      <Modal visible={applyModalVisible} animationType="slide" transparent>
-        <KeyboardAvoidingView 
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.modalOverlay}
-        >
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Gửi đề xuất</Text>
-              <TouchableOpacity onPress={() => setApplyModalVisible(false)} style={styles.closeBtn}>
-                <Ionicons name="close" size={24} color={TEXT_PRIMARY} />
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Giá đề xuất (Pts)</Text>
-                <TextInput
-                  style={styles.input}
-                  value={proposalData.total_amount}
-                  onChangeText={(v) => setProposalData({ ...proposalData, total_amount: v })}
-                  keyboardType="numeric"
-                  placeholder="Nhập giá của bạn"
-                  placeholderTextColor={TEXT_MUTED}
-                />
-              </View>
-
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Thời gian hoàn thành (Ngày)</Text>
-                <TextInput
-                  style={styles.input}
-                  value={proposalData.expected_days}
-                  onChangeText={(v) => setProposalData({ ...proposalData, expected_days: v })}
-                  keyboardType="numeric"
-                  placeholder="Ví dụ: 3"
-                  placeholderTextColor={TEXT_MUTED}
-                />
-              </View>
-
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Thư ngỏ</Text>
-                <TextInput
-                  style={[styles.input, styles.textArea]}
-                  value={proposalData.cover_letter}
-                  onChangeText={(v) => setProposalData({ ...proposalData, cover_letter: v })}
-                  multiline
-                  numberOfLines={4}
-                  placeholder="Giới thiệu về kỹ năng và kinh nghiệm của bạn..."
-                  placeholderTextColor={TEXT_MUTED}
-                />
-              </View>
-
-              <TouchableOpacity 
-                style={[styles.submitBtn, submitting && styles.btnDisabled]} 
-                onPress={handleApply}
-                disabled={submitting}
-              >
-                {submitting ? (
-                  <ActivityIndicator color="#FFF" />
-                ) : (
-                  <Text style={styles.submitBtnText}>Gửi ứng tuyển</Text>
-                )}
-              </TouchableOpacity>
-              <View style={{ height: 40 }} />
-            </ScrollView>
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
+      <ApplicationModal
+        visible={applyModalVisible}
+        onClose={() => setApplyModalVisible(false)}
+        proposalData={proposalData}
+        setProposalData={setProposalData}
+        onSubmit={handleApply}
+        submitting={submitting}
+      />
 
       {/* Contract Signing Modal */}
-      <Modal visible={signingModalVisible} animationType="fade" transparent>
-        <View style={styles.alertOverlay}>
-          <View style={styles.alertDialog}>
-            <View style={[styles.alertIconWrap, { backgroundColor: CYAN_ACCENT + '20' }]}>
-               <Ionicons name="keypad" size={40} color={CYAN_ACCENT} />
-            </View>
-            <Text style={styles.alertTitle}>KÝ HỢP ĐỒNG</Text>
-            <Text style={styles.alertMessage}>Vui lòng nhập mã OTP đã được gửi tới email của bạn để xác thực ký kết.</Text>
-            
-            <TextInput
-                 style={styles.otpInput}
-                 value={signatureOtp}
-                 onChangeText={setSignatureOtp}
-                 placeholder="6 chữ số"
-                 placeholderTextColor={TEXT_MUTED}
-                 keyboardType="numeric"
-                 maxLength={6}
-            />
-
-            <View style={styles.alertBtnRow}>
-                <TouchableOpacity
-                    style={styles.alertCancelBtn}
-                    onPress={() => setSigningModalVisible(false)}
-                >
-                    <Text style={styles.alertCancelText}>HỦY</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.alertOKButton, { backgroundColor: EMERALD, flex: 1, marginTop: 0 }]}
-                    onPress={handleSignContract}
-                    disabled={signing}
-                >
-                    {signing ? <ActivityIndicator color="#FFF" /> : <Text style={styles.alertOKText}>KÝ KẾT</Text>}
-                </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <ContractSigningModal
+        visible={signingModalVisible}
+        otp={signatureOtp}
+        setOtp={setSignatureOtp}
+        onCancel={() => setSigningModalVisible(false)}
+        onSubmit={handleSignContract}
+        signing={signing}
+        accentColor={CYAN_ACCENT}
+        confirmColor={EMERALD}
+      />
 
       {/* Submission Modal */}
-      <Modal visible={submitWorkModalVisible} animationType="slide" transparent>
-        <KeyboardAvoidingView 
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.modalOverlay}
-        >
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Nộp bài làm</Text>
-              <TouchableOpacity onPress={() => setSubmitWorkModalVisible(false)} style={styles.closeBtn}>
-                <Ionicons name="close" size={24} color={TEXT_PRIMARY} />
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <Text style={styles.milestoneContext}>Giai đoạn: {selectedCheckpoint?.name}</Text>
-                
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Link kết quả / Tài nguyên (GitHub, Drive, v.v.)</Text>
-                <TextInput
-                  style={styles.input}
-                  value={submissionData.work_link}
-                  onChangeText={(v) => setSubmissionData({ ...submissionData, work_link: v })}
-                  placeholder="https://..."
-                  placeholderTextColor={TEXT_MUTED}
-                />
-              </View>
-
-              <View style={styles.inputGroup}>
-                <View style={styles.filePickerHeader}>
-                    <Text style={styles.inputLabel}>Hoặc tải lên hình ảnh từ điện thoại</Text>
-                    {selectedFile && (
-                        <TouchableOpacity onPress={() => setSelectedFile(null)}>
-                            <Text style={styles.removeFileText}>Xóa</Text>
-                        </TouchableOpacity>
-                    )}
-                </View>
-                
-                <TouchableOpacity 
-                    style={[styles.filePickerBtn, selectedFile && styles.filePickerBtnActive]} 
-                    onPress={handlePickFile}
-                >
-                    <Ionicons 
-                        name={selectedFile ? "image" : "cloud-upload-outline"} 
-                        size={24} 
-                        color={selectedFile ? EMERALD : CYAN_ACCENT} 
-                    />
-                    <Text style={[styles.filePickerBtnText, selectedFile && { color: EMERALD }]}>
-                        {selectedFile ? `Đã chọn: ${selectedFile.fileName || 'Ảnh bài làm'}` : "Chọn hình ảnh bài làm"}
-                    </Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Ghi chú đính kèm</Text>
-                <TextInput
-                  style={[styles.input, styles.textArea]}
-                  value={submissionData.description}
-                  onChangeText={(v) => setSubmissionData({ ...submissionData, description: v })}
-                  multiline
-                  numberOfLines={4}
-                  placeholder="Ghi chú cho đối tác xem..."
-                  placeholderTextColor={TEXT_MUTED}
-                />
-              </View>
-
-              <TouchableOpacity 
-                style={[styles.submitBtn, (submitting || uploadingFile) && styles.btnDisabled]} 
-                onPress={handleSubmitWork}
-                disabled={submitting || uploadingFile}
-              >
-                {submitting || uploadingFile ? (
-                  <ActivityIndicator color="#FFF" />
-                ) : (
-                  <Text style={styles.submitBtnText}>Xác nhận nộp bài</Text>
-                )}
-              </TouchableOpacity>
-              <View style={{ height: 40 }} />
-            </ScrollView>
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
+      <SubmissionModal
+        visible={submitWorkModalVisible}
+        onClose={() => setSubmitWorkModalVisible(false)}
+        selectedCheckpoint={selectedCheckpoint}
+        submissionData={submissionData}
+        setSubmissionData={setSubmissionData}
+        selectedFile={selectedFile}
+        onPickFile={handlePickFile}
+        onRemoveFile={() => setSelectedFile(null)}
+        onSubmit={handleSubmitWork}
+        submitting={submitting}
+        uploadingFile={uploadingFile}
+      />
 
       {/* Global Custom Alert Modal */}
       <Modal visible={alertVisible} animationType="fade" transparent>
         <View style={styles.alertOverlay}>
           <View style={styles.alertDialog}>
-            <View style={[styles.alertIconWrap, { backgroundColor: alertConfig.type === 'error' ? '#f43f5e20' : CYAN_ACCENT + '20' }]}>
-               <Ionicons 
-                name={alertConfig.type === 'error' ? "alert-circle" : "checkmark-circle"} 
-                size={40} 
-                color={alertConfig.type === 'error' ? "#f43f5e" : CYAN_ACCENT} 
-               />
+            <View
+              style={[
+                styles.alertIconWrap,
+                {
+                  backgroundColor:
+                    alertConfig.type === "error"
+                      ? "#f43f5e20"
+                      : CYAN_ACCENT + "20",
+                },
+              ]}
+            >
+              <Ionicons
+                name={
+                  alertConfig.type === "error"
+                    ? "alert-circle"
+                    : "checkmark-circle"
+                }
+                size={40}
+                color={alertConfig.type === "error" ? "#f43f5e" : CYAN_ACCENT}
+              />
             </View>
             <Text style={styles.alertTitle}>{alertConfig.title}</Text>
             <Text style={styles.alertMessage}>{alertConfig.message}</Text>
-            
+
             <TouchableOpacity
-                style={[styles.alertOKButton, { backgroundColor: alertConfig.type === 'error' ? '#f43f5e' : CYAN_ACCENT }]}
-                onPress={handleAlertOK}
+              style={[
+                styles.alertOKButton,
+                {
+                  backgroundColor:
+                    alertConfig.type === "error" ? "#f43f5e" : CYAN_ACCENT,
+                },
+              ]}
+              onPress={handleAlertOK}
             >
-                <Text style={styles.alertOKText}>XÁC NHẬN</Text>
+              <Text style={styles.alertOKText}>XÁC NHẬN</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -968,7 +1123,7 @@ const styles = StyleSheet.create({
     color: EMERALD,
     fontSize: 11,
     fontWeight: "900",
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
   },
   statusBadge: {
     paddingHorizontal: 8,
@@ -1026,22 +1181,108 @@ const styles = StyleSheet.create({
   resourceItem: {
     marginRight: 12,
   },
-  resourceBox: {
-    width: 140,
-    height: 80,
-    backgroundColor: BG_CARD,
-    borderRadius: 12,
+  resourceCard: {
+    width: 160,
+    height: 90,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: "#1e293b",
+    borderColor: "rgba(34,211,238,0.18)",
+    backgroundColor: "rgba(0,0,0,0.35)",
+    overflow: "hidden",
+    position: "relative",
+  },
+  resourceThumb: {
+    width: "100%",
+    height: "100%",
+    opacity: 0.55,
+  },
+  resourceVideoPlaceholder: {
+    width: "100%",
+    height: "100%",
     alignItems: "center",
     justifyContent: "center",
-    gap: 4,
+    backgroundColor: "rgba(2,6,23,0.35)",
   },
-  resourceLabel: {
-    color: TEXT_MUTED,
+  resourceOverlay: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.18)",
+  },
+  resourceFooter: {
+    position: "absolute",
+    left: 10,
+    right: 10,
+    bottom: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 10,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.06)",
+  },
+  resourceDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: CYAN_ACCENT,
+    marginRight: 8,
+    shadowColor: CYAN_ACCENT,
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  resourceFooterText: {
+    flex: 1,
+    color: CYAN_ACCENT + "B3",
     fontSize: 10,
-    fontWeight: "700",
+    fontWeight: "900",
+    letterSpacing: 0.8,
     textTransform: "uppercase",
+  },
+  resourceCornerTL: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    width: 14,
+    height: 14,
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
+    borderColor: "rgba(34,211,238,0.30)",
+  },
+  resourceCornerTR: {
+    position: "absolute",
+    right: 0,
+    top: 0,
+    width: 14,
+    height: 14,
+    borderRightWidth: 1,
+    borderTopWidth: 1,
+    borderColor: "rgba(34,211,238,0.30)",
+  },
+  resourceCornerBL: {
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    width: 14,
+    height: 14,
+    borderLeftWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: "rgba(34,211,238,0.30)",
+  },
+  resourceCornerBR: {
+    position: "absolute",
+    right: 0,
+    bottom: 0,
+    width: 14,
+    height: 14,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: "rgba(34,211,238,0.30)",
   },
   milestonesList: {
     marginTop: 8,
@@ -1092,73 +1333,6 @@ const styles = StyleSheet.create({
     color: TEXT_SECONDARY,
     fontSize: 13,
     lineHeight: 18,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(2, 6, 23, 0.8)",
-    justifyContent: "flex-end",
-  },
-  modalContent: {
-    backgroundColor: BG_SURFACE,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    padding: 24,
-    maxHeight: "90%",
-    borderWidth: 1,
-    borderColor: "#1e293b",
-  },
-  modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 24,
-  },
-  modalTitle: {
-    fontSize: 22,
-    fontWeight: "800",
-    color: TEXT_PRIMARY,
-  },
-  closeBtn: {
-    padding: 4,
-  },
-  inputGroup: {
-    marginBottom: 20,
-  },
-  inputLabel: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: TEXT_SECONDARY,
-    marginBottom: 8,
-    marginLeft: 4,
-  },
-  input: {
-    backgroundColor: BG_BASE,
-    borderRadius: 12,
-    padding: 14,
-    color: TEXT_PRIMARY,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: "#1e293b",
-  },
-  textArea: {
-    height: 120,
-    textAlignVertical: "top",
-  },
-  submitBtn: {
-    backgroundColor: CYAN_ACCENT,
-    height: 54,
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 10,
-  },
-  submitBtnText: {
-    color: "#FFF",
-    fontSize: 16,
-    fontWeight: "800",
-  },
-  btnDisabled: {
-    opacity: 0.6,
   },
   signContractBtn: {
     flexDirection: "row",
@@ -1246,21 +1420,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontStyle: "italic",
   },
-  otpInput: {
-    width: "100%",
-    backgroundColor: BG_BASE,
-    borderRadius: 14,
-    height: 56,
-    textAlign: "center",
-    fontSize: 24,
-    fontWeight: "800",
-    color: CYAN_ACCENT,
-    letterSpacing: 8,
-    borderWidth: 1,
-    borderColor: "#1e293b",
-    marginBottom: 24,
-    marginTop: 10,
-  },
   alertOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.85)",
@@ -1332,46 +1491,5 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#FFF",
     letterSpacing: 1,
-  },
-  milestoneContext: {
-    color: TEXT_MUTED,
-    fontSize: 13,
-    marginBottom: 16,
-    fontWeight: "600",
-  },
-  filePickerHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-    paddingHorizontal: 4,
-  },
-  filePickerBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: BG_BASE,
-    borderRadius: 14,
-    height: 56,
-    paddingHorizontal: 16,
-    borderWidth: 1,
-    borderColor: "#1e293b",
-    borderStyle: "dashed",
-    gap: 12,
-  },
-  filePickerBtnActive: {
-    borderColor: EMERALD,
-    backgroundColor: EMERALD + "05",
-    borderStyle: "solid",
-  },
-  filePickerBtnText: {
-    color: TEXT_MUTED,
-    fontSize: 14,
-    fontWeight: "600",
-    flex: 1,
-  },
-  removeFileText: {
-    color: "#f43f5e",
-    fontSize: 12,
-    fontWeight: "700",
   },
 });
