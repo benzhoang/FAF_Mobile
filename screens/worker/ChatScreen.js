@@ -12,7 +12,11 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { getChatMessages, sendChatMessage, getCurrentUserProfile } from "../../service/api";
+import {
+  getChatMessages,
+  sendChatMessage,
+  getCurrentUserProfile,
+} from "../../service/api";
 
 const BG_BASE = "#020617";
 const BG_SURFACE = "#090e17";
@@ -35,7 +39,7 @@ export default function ChatScreen({ route, navigation }) {
   useEffect(() => {
     fetchProfile();
     fetchMessages();
-    
+
     // Polling for new messages every 3 seconds
     const interval = setInterval(fetchMessages, 3000);
     return () => clearInterval(interval);
@@ -54,14 +58,21 @@ export default function ChatScreen({ route, navigation }) {
       if (res.success) {
         const newMessages = res.data || [];
         // Update if count or last message ID changed
-        const lastOldId = messages.length > 0 ? messages[messages.length - 1].id : null;
-        const lastNewId = newMessages.length > 0 ? newMessages[newMessages.length - 1].id : null;
-        
+        const lastOldId =
+          messages.length > 0 ? messages[messages.length - 1].id : null;
+        const lastNewId =
+          newMessages.length > 0
+            ? newMessages[newMessages.length - 1].id
+            : null;
+
         if (lastNewId !== lastOldId) {
           setMessages(newMessages);
           // Only scroll if it's the first load or a new message arrived
           if (!lastOldId || lastNewId !== lastOldId) {
-            setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
+            setTimeout(
+              () => flatListRef.current?.scrollToEnd({ animated: true }),
+              100,
+            );
           }
         }
       }
@@ -95,7 +106,7 @@ export default function ChatScreen({ route, navigation }) {
 
   const renderMessage = ({ item }) => {
     const isMe = currentUser && item.sender_id === currentUser.id;
-    const isSystem = item.type === 'SYSTEM';
+    const isSystem = item.type === "SYSTEM";
 
     if (isSystem) {
       return (
@@ -106,11 +117,24 @@ export default function ChatScreen({ route, navigation }) {
     }
 
     return (
-      <View style={[styles.messageWrapper, isMe ? styles.myMsgWrapper : styles.theirMsgWrapper]}>
-        <View style={[styles.messageBubble, isMe ? styles.myBubble : styles.theirBubble]}>
+      <View
+        style={[
+          styles.messageWrapper,
+          isMe ? styles.myMsgWrapper : styles.theirMsgWrapper,
+        ]}
+      >
+        <View
+          style={[
+            styles.messageBubble,
+            isMe ? styles.myBubble : styles.theirBubble,
+          ]}
+        >
           <Text style={styles.messageText}>{item.content}</Text>
           <Text style={styles.timestamp}>
-            {new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            {new Date(item.created_at).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </Text>
         </View>
       </View>
@@ -120,7 +144,10 @@ export default function ChatScreen({ route, navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backBtn}
+        >
           <Ionicons name="arrow-back" size={24} color={CYAN_ACCENT} />
         </TouchableOpacity>
         <View style={styles.headerInfo}>
@@ -166,8 +193,11 @@ export default function ChatScreen({ route, navigation }) {
             onChangeText={setInputText}
             multiline
           />
-          <TouchableOpacity 
-            style={[styles.sendBtn, !inputText.trim() && styles.sendBtnDisabled]} 
+          <TouchableOpacity
+            style={[
+              styles.sendBtn,
+              !inputText.trim() && styles.sendBtnDisabled,
+            ]}
             onPress={handleSend}
             disabled={!inputText.trim() || sending}
           >
@@ -194,7 +224,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingBottom: 12,
+    paddingTop: 40,
     backgroundColor: BG_SURFACE,
     borderBottomWidth: 1,
     borderBottomColor: "#1e293b",
@@ -296,7 +327,7 @@ const styles = StyleSheet.create({
     backgroundColor: BG_SURFACE,
     borderTopWidth: 1,
     borderTopColor: "#1e293b",
-    paddingBottom: Platform.OS === "ios" ? 24 : 12,
+    paddingBottom: Platform.OS === "ios" ? 60 : 48,
   },
   attachBtn: {
     padding: 8,
