@@ -9,7 +9,8 @@ import {
   Image,
   ActivityIndicator,
   Linking,
-  Alert,
+  Modal,
+  Pressable,
   Dimensions,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -25,6 +26,8 @@ const BG_SURFACE = "#0b1120";
 const CYAN_ACCENT = "#22d3ee";
 const TEXT_PRIMARY = "#f8fafc";
 const TEXT_SECONDARY = "#94a3b8";
+const EMERALD = "#10b981";
+const ROSE = "#f43f5e";
 
 export default function DepositScreen() {
   const navigation = useNavigation();
@@ -35,16 +38,33 @@ export default function DepositScreen() {
   const [paymentMethod, setPaymentMethod] = useState("zalopay");
   const [loading, setLoading] = useState(false);
   const exchangeRate = 1000;
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({
+    title: "",
+    message: "",
+    type: "success", // success | error
+    onConfirm: null,
+  });
 
   useEffect(() => {
     const p = parseInt(points) || 0;
     setVndAmount(p * exchangeRate);
   }, [points]);
 
+  const showCustomAlert = (title, message, type = "success", onConfirm = null) => {
+    setAlertConfig({ title, message, type, onConfirm });
+    setAlertVisible(true);
+  };
+
+  const handleAlertOK = () => {
+    setAlertVisible(false);
+    if (alertConfig.onConfirm) alertConfig.onConfirm();
+  };
+
   const handlePayment = async () => {
     const p = parseInt(points);
     if (!p || p < 1) {
-      Alert.alert("Lỗi", "Vui lòng nhập số CRED tối thiểu là 1");
+      showCustomAlert("Lỗi", "Vui lòng nhập số CRED tối thiểu là 1", "error");
       return;
     }
 
@@ -62,7 +82,11 @@ export default function DepositScreen() {
           method = "zalopay";
           await WebBrowser.openBrowserAsync(res.data.order_url);
         } else {
-          Alert.alert("Lỗi", res.error || "Không nhận được link thanh toán ZaloPay");
+          showCustomAlert(
+            "Lỗi",
+            res.error || "Không nhận được link thanh toán ZaloPay",
+            "error",
+          );
           setLoading(false);
           return;
         }
@@ -73,7 +97,11 @@ export default function DepositScreen() {
           method = "momo";
           await WebBrowser.openBrowserAsync(res.data.payUrl);
         } else {
-          Alert.alert("Lỗi", res.error || "Không nhận được link thanh toán MoMo");
+          showCustomAlert(
+            "Lỗi",
+            res.error || "Không nhận được link thanh toán MoMo",
+            "error",
+          );
           setLoading(false);
           return;
         }
@@ -122,8 +150,12 @@ export default function DepositScreen() {
             clearInterval(interval);
             setLoading(false);
             if (!isDone) {
-               Alert.alert("Thông báo", "Giao dịch đang được xử lý. Vui lòng kiểm tra ví sau ít phút.");
-               navigation.navigate("Wallet");
+               showCustomAlert(
+                 "Thông báo",
+                 "Giao dịch đang được xử lý. Vui lòng kiểm tra ví sau ít phút.",
+                 "success",
+                 () => navigation.navigate("Wallet"),
+               );
             }
           }
         }, 3000);
@@ -131,7 +163,7 @@ export default function DepositScreen() {
 
     } catch (error) {
       console.error("Payment error:", error);
-      Alert.alert("Lỗi", "Đã xảy ra lỗi khi khởi tạo thanh toán");
+      showCustomAlert("Lỗi", "Đã xảy ra lỗi khi khởi tạo thanh toán", "error");
       setLoading(false);
     }
   };
@@ -254,6 +286,56 @@ export default function DepositScreen() {
       )}
       
       <Text style={styles.securityNote}>🔒 Giao dịch được bảo mật bởi FAF_PROTOCOL</Text>
+
+      <Modal
+        visible={alertVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setAlertVisible(false)}
+      >
+        <Pressable
+          style={styles.alertOverlay}
+          onPress={() => setAlertVisible(false)}
+        >
+          <Pressable
+            style={styles.alertDialog}
+            onPress={(e) => e.stopPropagation()}
+          >
+            <View
+              style={[
+                styles.alertIconWrap,
+                {
+                  backgroundColor:
+                    alertConfig.type === "success"
+                      ? EMERALD + "20"
+                      : ROSE + "20",
+                },
+              ]}
+            >
+              <FontAwesome
+                name={alertConfig.type === "success" ? "check-circle" : "exclamation-circle"}
+                size={40}
+                color={alertConfig.type === "success" ? EMERALD : ROSE}
+              />
+            </View>
+            <Text style={styles.alertTitle}>{alertConfig.title}</Text>
+            <Text style={styles.alertMessage}>{alertConfig.message}</Text>
+            <TouchableOpacity
+              style={[
+                styles.alertOKButton,
+                {
+                  backgroundColor:
+                    alertConfig.type === "success" ? EMERALD : ROSE,
+                },
+              ]}
+              onPress={handleAlertOK}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.alertOKText}>XÁC NHẬN</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </ScrollView>
   );
 }
@@ -479,5 +561,58 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textDecorationLine: 'underline',
     fontWeight: "600",
+  },
+  alertOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.85)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+  },
+  alertDialog: {
+    width: "100%",
+    maxWidth: 340,
+    backgroundColor: BG_SURFACE,
+    borderRadius: 24,
+    padding: 24,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#1e293b",
+  },
+  alertIconWrap: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  alertTitle: {
+    fontSize: 20,
+    fontWeight: "900",
+    color: TEXT_PRIMARY,
+    marginBottom: 10,
+    letterSpacing: 1,
+    textAlign: "center",
+  },
+  alertMessage: {
+    fontSize: 14,
+    color: TEXT_SECONDARY,
+    textAlign: "center",
+    marginBottom: 24,
+    lineHeight: 20,
+  },
+  alertOKButton: {
+    width: "100%",
+    height: 50,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  alertOKText: {
+    fontSize: 15,
+    fontWeight: "800",
+    color: "#FFF",
+    letterSpacing: 1,
   },
 });

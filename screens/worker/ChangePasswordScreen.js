@@ -10,7 +10,6 @@ import {
   Platform,
   Alert,
   ScrollView,
-  SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { changePassword } from "../../service/api";
@@ -57,13 +56,16 @@ export default function ChangePasswordScreen({ navigation }) {
     try {
       const res = await changePassword(oldPassword, newPassword);
       if (res.success) {
-        Alert.alert("Thành công", "Mật khẩu của bạn đã được thay đổi. Vui lòng đăng nhập lại.", [
-          { text: "Đăng nhập lại", onPress: handleLogoutAfterPasswordChange }
-        ]);
+        Alert.alert(
+          "Thành công",
+          "Mật khẩu của bạn đã được thay đổi. Vui lòng đăng nhập lại.",
+          [{ text: "Đăng nhập lại", onPress: handleLogoutAfterPasswordChange }],
+        );
       } else {
-        const errorMsg = res.error === "Wrong old password" 
-          ? "Mật khẩu cũ không chính xác." 
-          : (res.error || "Không thể đổi mật khẩu. Vui lòng thử lại sau.");
+        const errorMsg =
+          res.error === "Wrong old password"
+            ? "Mật khẩu cũ không chính xác."
+            : res.error || "Không thể đổi mật khẩu. Vui lòng thử lại sau.";
         Alert.alert("Lỗi", errorMsg);
       }
     } catch (err) {
@@ -86,7 +88,7 @@ export default function ChangePasswordScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <View style={styles.iconCircle}>
@@ -102,7 +104,12 @@ export default function ChangePasswordScreen({ navigation }) {
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Mật khẩu hiện tại</Text>
             <View style={styles.inputField}>
-              <Ionicons name="key-outline" size={20} color={TEXT_MUTED} style={styles.inputIcon} />
+              <Ionicons
+                name="key-outline"
+                size={20}
+                color={TEXT_MUTED}
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.input}
                 placeholder="Nhập mật khẩu hiện tại"
@@ -112,7 +119,11 @@ export default function ChangePasswordScreen({ navigation }) {
                 onChangeText={setOldPassword}
               />
               <TouchableOpacity onPress={() => setShowOld(!showOld)}>
-                <Ionicons name={showOld ? "eye-off-outline" : "eye-outline"} size={20} color={TEXT_MUTED} />
+                <Ionicons
+                  name={showOld ? "eye-off-outline" : "eye-outline"}
+                  size={20}
+                  color={TEXT_MUTED}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -120,7 +131,12 @@ export default function ChangePasswordScreen({ navigation }) {
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Mật khẩu mới</Text>
             <View style={styles.inputField}>
-              <Ionicons name="shield-checkmark-outline" size={20} color={TEXT_MUTED} style={styles.inputIcon} />
+              <Ionicons
+                name="shield-checkmark-outline"
+                size={20}
+                color={TEXT_MUTED}
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.input}
                 placeholder="Ít nhất 6 ký tự"
@@ -130,7 +146,11 @@ export default function ChangePasswordScreen({ navigation }) {
                 onChangeText={setNewPassword}
               />
               <TouchableOpacity onPress={() => setShowNew(!showNew)}>
-                <Ionicons name={showNew ? "eye-off-outline" : "eye-outline"} size={20} color={TEXT_MUTED} />
+                <Ionicons
+                  name={showNew ? "eye-off-outline" : "eye-outline"}
+                  size={20}
+                  color={TEXT_MUTED}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -138,7 +158,12 @@ export default function ChangePasswordScreen({ navigation }) {
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Xác nhận mật khẩu mới</Text>
             <View style={styles.inputField}>
-              <Ionicons name="repeat-outline" size={20} color={TEXT_MUTED} style={styles.inputIcon} />
+              <Ionicons
+                name="repeat-outline"
+                size={20}
+                color={TEXT_MUTED}
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.input}
                 placeholder="Nhập lại mật khẩu mới"
@@ -148,13 +173,17 @@ export default function ChangePasswordScreen({ navigation }) {
                 onChangeText={setConfirmPassword}
               />
               <TouchableOpacity onPress={() => setShowConfirm(!showConfirm)}>
-                <Ionicons name={showConfirm ? "eye-off-outline" : "eye-outline"} size={20} color={TEXT_MUTED} />
+                <Ionicons
+                  name={showConfirm ? "eye-off-outline" : "eye-outline"}
+                  size={20}
+                  color={TEXT_MUTED}
+                />
               </TouchableOpacity>
             </View>
           </View>
 
-          <TouchableOpacity 
-            style={[styles.button, loading && styles.buttonDisabled]} 
+          <TouchableOpacity
+            style={[styles.button, loading && styles.buttonDisabled]}
             onPress={handleUpdate}
             disabled={loading}
           >
@@ -166,7 +195,7 @@ export default function ChangePasswordScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 

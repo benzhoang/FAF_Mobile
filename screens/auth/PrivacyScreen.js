@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -17,7 +16,7 @@ const TEXT_SECONDARY = "#94a3b8";
 
 export default function PrivacyScreen({ navigation }) {
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
@@ -32,45 +31,52 @@ export default function PrivacyScreen({ navigation }) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>1. Thu thập thông tin</Text>
           <Text style={styles.text}>
-            FAF thu thập các thông tin cần thiết để cung cấp và cải thiện dịch vụ, bao gồm: Họ tên, email, số điện thoại, và thông tin hồ sơ nghề nghiệp của bạn.
+            FAF thu thập các thông tin cần thiết để cung cấp và cải thiện dịch
+            vụ, bao gồm: Họ tên, email, số điện thoại, và thông tin hồ sơ nghề
+            nghiệp của bạn.
           </Text>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>2. Sử dụng thông tin</Text>
           <Text style={styles.text}>
-            Thông tin của bạn được sử dụng để:{"\n"}
-            - Xác thực tài khoản.{"\n"}
-            - Kết nối bạn với các cơ hội công việc phù hợp.{"\n"}
-            - Gửi các thông báo quan trọng về tài khoản và hệ thống.{"\n"}
-            - Xử lý các khiếu nại và tranh chấp nếu có.
+            Thông tin của bạn được sử dụng để:{"\n"}- Xác thực tài khoản.{"\n"}-
+            Kết nối bạn với các cơ hội công việc phù hợp.{"\n"}- Gửi các thông
+            báo quan trọng về tài khoản và hệ thống.{"\n"}- Xử lý các khiếu nại
+            và tranh chấp nếu có.
           </Text>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>3. Bảo mật thông tin</Text>
           <Text style={styles.text}>
-            Chúng tôi sử dụng các biện pháp kỹ thuật tiên tiến để bảo vệ thông tin cá nhân của bạn khỏi việc truy cập, sử dụng hoặc tiết lộ trái phép. Dữ liệu của bạn được mã hóa và lưu trữ an toàn.
+            Chúng tôi sử dụng các biện pháp kỹ thuật tiên tiến để bảo vệ thông
+            tin cá nhân của bạn khỏi việc truy cập, sử dụng hoặc tiết lộ trái
+            phép. Dữ liệu của bạn được mã hóa và lưu trữ an toàn.
           </Text>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>4. Chia sẻ thông tin</Text>
           <Text style={styles.text}>
-            FAF cam kết không bán hoặc cho thuê thông tin cá nhân của bạn cho bên thứ ba. Chúng tôi chỉ chia sẻ thông tin khi có sự đồng ý của bạn hoặc theo yêu cầu của pháp luật.
+            FAF cam kết không bán hoặc cho thuê thông tin cá nhân của bạn cho
+            bên thứ ba. Chúng tôi chỉ chia sẻ thông tin khi có sự đồng ý của bạn
+            hoặc theo yêu cầu của pháp luật.
           </Text>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>5. Quyền của bạn</Text>
           <Text style={styles.text}>
-            Bạn có quyền truy cập, chỉnh sửa hoặc yêu cầu xóa thông tin cá nhân của mình bất kỳ lúc nào thông qua phần cài đặt tài khoản trong ứng dụng.
+            Bạn có quyền truy cập, chỉnh sửa hoặc yêu cầu xóa thông tin cá nhân
+            của mình bất kỳ lúc nào thông qua phần cài đặt tài khoản trong ứng
+            dụng.
           </Text>
         </View>
 
         <Text style={styles.lastUpdated}>Cập nhật lần cuối: 18/03/2026</Text>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 

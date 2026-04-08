@@ -10,7 +10,6 @@ import {
   Platform,
   Alert,
   ScrollView,
-  SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { resetPassword } from "../../service/api";
@@ -71,7 +70,7 @@ export default function ResetPasswordScreen({ route, navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
@@ -185,7 +184,7 @@ export default function ResetPasswordScreen({ route, navigation }) {
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 }
 

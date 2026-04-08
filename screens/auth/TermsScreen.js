@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -17,7 +16,7 @@ const TEXT_SECONDARY = "#94a3b8";
 
 export default function TermsScreen({ navigation }) {
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
@@ -32,43 +31,51 @@ export default function TermsScreen({ navigation }) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>1. Chấp thuận điều khoản</Text>
           <Text style={styles.text}>
-            Bằng việc đăng ký tài khoản và sử dụng nền tảng FAF, bạn đồng ý tuân thủ các điều khoản và điều kiện được nêu tại đây. Nếu bạn không đồng ý, vui lòng ngừng sử dụng dịch vụ ngay lập tức.
+            Bằng việc đăng ký tài khoản và sử dụng nền tảng FAF, bạn đồng ý tuân
+            thủ các điều khoản và điều kiện được nêu tại đây. Nếu bạn không đồng
+            ý, vui lòng ngừng sử dụng dịch vụ ngay lập tức.
           </Text>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>2. Trách nhiệm người dùng</Text>
           <Text style={styles.text}>
-            Người dùng có trách nhiệm bảo mật thông tin tài khoản và mật khẩu của mình. Mọi hoạt động diễn ra dưới tài khoản của bạn sẽ do bạn chịu trách nhiệm hoàn toàn.
+            Người dùng có trách nhiệm bảo mật thông tin tài khoản và mật khẩu
+            của mình. Mọi hoạt động diễn ra dưới tài khoản của bạn sẽ do bạn
+            chịu trách nhiệm hoàn toàn.
           </Text>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>3. Dịch vụ và Thanh toán</Text>
           <Text style={styles.text}>
-            FAF cung cấp nền tảng kết nối giữa người thuê và người làm. Các giao dịch tài chính phải được thực hiện thông qua hệ thống thanh toán của FAF để đảm bảo an toàn và quyền lợi cho các bên.
+            FAF cung cấp nền tảng kết nối giữa người thuê và người làm. Các giao
+            dịch tài chính phải được thực hiện thông qua hệ thống thanh toán của
+            FAF để đảm bảo an toàn và quyền lợi cho các bên.
           </Text>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>4. Hành vi bị nghiêm cấm</Text>
           <Text style={styles.text}>
-            - Cung cấp thông tin giả mạo hoặc lừa đảo.{"\n"}
-            - Gây rối, đe dọa hoặc quấy rối người dùng khác.{"\n"}
-            - Vi phạm bản quyền hoặc quyền sở hữu trí tuệ của FAF.
+            - Cung cấp thông tin giả mạo hoặc lừa đảo.{"\n"}- Gây rối, đe dọa
+            hoặc quấy rối người dùng khác.{"\n"}- Vi phạm bản quyền hoặc quyền
+            sở hữu trí tuệ của FAF.
           </Text>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>5. Chấm dứt dịch vụ</Text>
           <Text style={styles.text}>
-            FAF có quyền tạm khóa hoặc chấm dứt vĩnh viễn tài khoản của người dùng nếu phát hiện vi phạm nghiêm trọng các điều khoản dịch vụ mà không cần báo trước.
+            FAF có quyền tạm khóa hoặc chấm dứt vĩnh viễn tài khoản của người
+            dùng nếu phát hiện vi phạm nghiêm trọng các điều khoản dịch vụ mà
+            không cần báo trước.
           </Text>
         </View>
 
         <Text style={styles.lastUpdated}>Cập nhật lần cuối: 18/03/2026</Text>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 

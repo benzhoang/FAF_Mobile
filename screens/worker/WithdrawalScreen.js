@@ -9,7 +9,8 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  Alert,
+  Modal,
+  Pressable,
   ScrollView,
   RefreshControl,
 } from "react-native";
@@ -35,6 +36,13 @@ export default function WithdrawalScreen({ navigation }) {
   const [submitting, setSubmitting] = useState(false);
   const [requests, setRequests] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({
+    title: "",
+    message: "",
+    type: "success", // success | error
+    onConfirm: null,
+  });
 
   useEffect(() => {
     fetchData();
@@ -67,17 +75,31 @@ export default function WithdrawalScreen({ navigation }) {
     fetchData();
   };
 
+  const showCustomAlert = (title, message, type = "success", onConfirm = null) => {
+    setAlertConfig({ title, message, type, onConfirm });
+    setAlertVisible(true);
+  };
+
+  const handleAlertOK = () => {
+    setAlertVisible(false);
+    if (alertConfig.onConfirm) alertConfig.onConfirm();
+  };
+
   const handleRequest = async () => {
     if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
-      Alert.alert("Lỗi", "Vui lòng nhập số tiền hợp lệ");
+      showCustomAlert("Lỗi", "Vui lòng nhập số tiền hợp lệ", "error");
       return;
     }
     if (parseFloat(amount) > balance) {
-      Alert.alert("Lỗi", "Số dư không đủ");
+      showCustomAlert("Lỗi", "Số dư không đủ", "error");
       return;
     }
     if (!bankInfo.trim()) {
-      Alert.alert("Lỗi", "Vui lòng nhập thông tin ngân hàng (Số tài khoản, Tên ngân hàng, Tên chủ tài khoản)");
+      showCustomAlert(
+        "Lỗi",
+        "Vui lòng nhập thông tin ngân hàng (Số tài khoản, Tên ngân hàng, Tên chủ tài khoản)",
+        "error",
+      );
       return;
     }
 
@@ -89,15 +111,21 @@ export default function WithdrawalScreen({ navigation }) {
         details: bankInfo.trim() 
       });
       if (res.success) {
-        Alert.alert("Thành công", "Yêu cầu rút tiền của bạn đã được gửi và đang chờ xử lý.");
-        setAmount("");
-        setBankInfo("");
-        fetchData();
+        showCustomAlert(
+          "Thành công",
+          "Yêu cầu rút tiền của bạn đã được gửi và đang chờ xử lý.",
+          "success",
+          () => {
+            setAmount("");
+            setBankInfo("");
+            fetchData();
+          },
+        );
       } else {
-        Alert.alert("Lỗi", res.error || "Không thể gửi yêu cầu");
+        showCustomAlert("Lỗi", res.error || "Không thể gửi yêu cầu", "error");
       }
     } catch (err) {
-      Alert.alert("Lỗi", "Có lỗi xảy ra khi gửi yêu cầu");
+      showCustomAlert("Lỗi", "Có lỗi xảy ra khi gửi yêu cầu", "error");
     } finally {
       setSubmitting(false);
     }
@@ -252,6 +280,60 @@ export default function WithdrawalScreen({ navigation }) {
           )}
         </View>
       </ScrollView>
+
+      <Modal
+        visible={alertVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setAlertVisible(false)}
+      >
+        <Pressable
+          style={styles.alertOverlay}
+          onPress={() => setAlertVisible(false)}
+        >
+          <Pressable
+            style={styles.alertDialog}
+            onPress={(e) => e.stopPropagation()}
+          >
+            <View
+              style={[
+                styles.alertIconWrap,
+                {
+                  backgroundColor:
+                    alertConfig.type === "success"
+                      ? EMERALD + "20"
+                      : ROSE + "20",
+                },
+              ]}
+            >
+              <Ionicons
+                name={
+                  alertConfig.type === "success"
+                    ? "checkmark-circle"
+                    : "alert-circle"
+                }
+                size={40}
+                color={alertConfig.type === "success" ? EMERALD : ROSE}
+              />
+            </View>
+            <Text style={styles.alertTitle}>{alertConfig.title}</Text>
+            <Text style={styles.alertMessage}>{alertConfig.message}</Text>
+            <TouchableOpacity
+              style={[
+                styles.alertOKButton,
+                {
+                  backgroundColor:
+                    alertConfig.type === "success" ? EMERALD : ROSE,
+                },
+              ]}
+              onPress={handleAlertOK}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.alertOKText}>XÁC NHẬN</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -467,5 +549,58 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginTop: 6,
     marginLeft: 4,
+  },
+  alertOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.85)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+  },
+  alertDialog: {
+    width: "100%",
+    maxWidth: 340,
+    backgroundColor: BG_SURFACE,
+    borderRadius: 24,
+    padding: 24,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#1e293b",
+  },
+  alertIconWrap: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  alertTitle: {
+    fontSize: 20,
+    fontWeight: "900",
+    color: TEXT_PRIMARY,
+    marginBottom: 10,
+    letterSpacing: 1,
+    textAlign: "center",
+  },
+  alertMessage: {
+    fontSize: 14,
+    color: TEXT_SECONDARY,
+    textAlign: "center",
+    marginBottom: 24,
+    lineHeight: 20,
+  },
+  alertOKButton: {
+    width: "100%",
+    height: 50,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  alertOKText: {
+    fontSize: 15,
+    fontWeight: "800",
+    color: "#FFF",
+    letterSpacing: 1,
   },
 });

@@ -10,7 +10,6 @@ import {
   Platform,
   Alert,
   ScrollView,
-  SafeAreaView,
   Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -65,7 +64,7 @@ export default function ForgotPasswordScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
@@ -141,7 +140,7 @@ export default function ForgotPasswordScreen({ navigation }) {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 }
 

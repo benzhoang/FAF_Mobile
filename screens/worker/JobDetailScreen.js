@@ -388,6 +388,27 @@ export default function JobDetailScreen() {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " CRED";
   };
 
+  const formatDueDateTime = (input) => {
+    const d = new Date(input);
+    if (Number.isNaN(d.getTime())) return null;
+    const date = d.toLocaleDateString();
+    const time = d.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    return `${date} ${time}`;
+  };
+
+  const getRemainingText = (input) => {
+    const d = new Date(input);
+    if (Number.isNaN(d.getTime())) return null;
+    const diff = d.getTime() - Date.now();
+    if (diff < 0) return "ĐÃ QUÁ HẠN";
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    return `${days} ngày ${hours} giờ`;
+  };
+
   const getStatusStyle = (status) => {
     switch (status?.toUpperCase()) {
       case "ACCEPTED":
@@ -617,14 +638,62 @@ export default function JobDetailScreen() {
                                 </Text>
                               </View>
                             )}
-                            <Text style={styles.milestoneAmount}>
-                              {getFormatPrice(cp.amount)}
-                            </Text>
+                            {cp.amount !== null &&
+                              cp.amount !== undefined &&
+                              !Number.isNaN(Number(cp.amount)) && (
+                                <View style={styles.amountWrap}>
+                                  <Text style={styles.amountOriginal}>
+                                    {getFormatPrice(cp.amount)}
+                                  </Text>
+                                  <Text style={styles.amountNet}>
+                                    {getFormatPrice(
+                                      Math.round(Number(cp.amount) * 0.95),
+                                    )}
+                                  </Text>
+                                  <Text style={styles.amountFeeNote}>
+                                    Thực nhận (-5% phí)
+                                  </Text>
+                                </View>
+                              )}
                           </View>
                         </View>
                         <Text style={styles.milestoneDesc}>
                           {cp.description || "Không có mô tả"}
                         </Text>
+
+                        {cp.due_date ? (
+                          <View style={styles.deadlineBlock}>
+                            <View style={styles.deadlineRow}>
+                              <Ionicons
+                                name="time-outline"
+                                size={14}
+                                color={CYAN_ACCENT}
+                              />
+                              <Text style={styles.deadlineText}>
+                                Hạn chót:{" "}
+                                {formatDueDateTime(cp.due_date) || "N/A"}
+                              </Text>
+                            </View>
+                            {cp.status === "PENDING" && (
+                              <Text style={styles.deadlineRemaining}>
+                                ⏳ Còn lại:{" "}
+                                {getRemainingText(cp.due_date) || "N/A"}
+                              </Text>
+                            )}
+                          </View>
+                        ) : cp.duration_days ? (
+                          <View style={styles.durationRow}>
+                            <Ionicons
+                              name="time-outline"
+                              size={14}
+                              color={TEXT_MUTED}
+                            />
+                            <Text style={styles.durationText}>
+                              Dự kiến: {cp.duration_days} ngày thực hiện (sẽ bắt
+                              đầu sau Giai đoạn trước)
+                            </Text>
+                          </View>
+                        ) : null}
 
                         {/* Work submission action */}
                         {contract?.status === "ACTIVE" && (
@@ -1082,7 +1151,7 @@ const styles = StyleSheet.create({
     backgroundColor: BG_SURFACE,
     borderTopWidth: 1,
     borderTopColor: "#1e293b",
-    paddingBottom: Platform.OS === "ios" ? 40 : 20,
+    paddingBottom: Platform.OS === "ios" ? 80 : 60,
   },
   applyBtn: {
     backgroundColor: CYAN_ACCENT,
@@ -1149,6 +1218,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   viewProposalBtn: {
+    marginTop: 10,
     alignItems: "center",
   },
   viewProposalText: {
@@ -1324,15 +1394,68 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
   },
-  milestoneAmount: {
-    color: EMERALD,
-    fontSize: 14,
-    fontWeight: "800",
-  },
   milestoneDesc: {
     color: TEXT_SECONDARY,
     fontSize: 13,
     lineHeight: 18,
+  },
+  amountWrap: {
+    alignItems: "flex-end",
+  },
+  amountOriginal: {
+    color: TEXT_MUTED,
+    fontSize: 12,
+    fontWeight: "800",
+    textDecorationLine: "line-through",
+    opacity: 0.6,
+  },
+  amountNet: {
+    color: CYAN_ACCENT,
+    fontSize: 15,
+    fontWeight: "900",
+    marginTop: 2,
+  },
+  amountFeeNote: {
+    color: CYAN_ACCENT + "A6",
+    fontSize: 10,
+    fontWeight: "800",
+    textTransform: "uppercase",
+    marginTop: 2,
+  },
+  deadlineBlock: {
+    marginTop: 10,
+  },
+  deadlineRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  deadlineText: {
+    fontSize: 11,
+    color: CYAN_ACCENT,
+    fontWeight: "800",
+    letterSpacing: 0.6,
+    textTransform: "uppercase",
+  },
+  deadlineRemaining: {
+    marginTop: 4,
+    fontSize: 10,
+    color: "#f43f5e",
+    fontWeight: "800",
+    fontStyle: "italic",
+  },
+  durationRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 10,
+  },
+  durationText: {
+    fontSize: 11,
+    color: TEXT_MUTED,
+    fontWeight: "600",
+    fontStyle: "italic",
+    flex: 1,
   },
   signContractBtn: {
     flexDirection: "row",
