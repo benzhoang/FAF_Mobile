@@ -21,12 +21,15 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.benzhoang.FAFApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-web-browser"],
+    "plugins": [
+      "expo-web-browser"
+    ],
     "extra": {
       "eas": {
         "projectId": "0c5abcfa-4bd4-4ddf-a852-83b83ce43665"

@@ -58,6 +58,10 @@ export default function RegisterScreen({ navigation }) {
       setErrorMessage("Mật khẩu xác nhận không khớp");
       return;
     }
+    if (password.length < 6) {
+      setErrorMessage("Mật khẩu phải có ít nhất 6 ký tự");
+      return;
+    }
     if (!agreeToTerms) {
       setErrorMessage("Bạn phải đồng ý với điều khoản dịch vụ");
       return;
