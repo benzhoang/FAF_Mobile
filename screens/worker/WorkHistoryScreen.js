@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -17,7 +25,7 @@ const AMBER = "#fbbf24";
 const ROSE = "#f43f5e";
 
 // Manual API call since we need a specific format for this screen
-const API_BASE_URL = "https://fafbe-production.up.railway.app/api";
+const API_BASE_URL = "https://fafbe-productionf.up.railway.app/api";
 
 export default function WorkHistoryScreen({ navigation }) {
   const [contracts, setContracts] = useState([]);
@@ -28,9 +36,9 @@ export default function WorkHistoryScreen({ navigation }) {
     try {
       const token = await AsyncStorage.getItem("token");
       const response = await axios.get(`${API_BASE_URL}/contracts/my`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
-      
+
       if (response.data && response.data.data) {
         setContracts(response.data.data);
       } else if (Array.isArray(response.data)) {
@@ -56,17 +64,47 @@ export default function WorkHistoryScreen({ navigation }) {
   const getStatusStyle = (status) => {
     switch (status?.toUpperCase()) {
       case "ACTIVE":
-        return { color: CYAN_ACCENT, bg: CYAN_ACCENT + "15", border: CYAN_ACCENT + "30", label: "Đang làm" };
+        return {
+          color: CYAN_ACCENT,
+          bg: CYAN_ACCENT + "15",
+          border: CYAN_ACCENT + "30",
+          label: "Đang làm",
+        };
       case "COMPLETED":
-        return { color: EMERALD, bg: EMERALD + "15", border: EMERALD + "30", label: "Hoàn thành" };
+        return {
+          color: EMERALD,
+          bg: EMERALD + "15",
+          border: EMERALD + "30",
+          label: "Hoàn thành",
+        };
       case "SETTLED":
-        return { color: EMERALD, bg: EMERALD + "15", border: EMERALD + "30", label: "Đã thanh toán" };
+        return {
+          color: EMERALD,
+          bg: EMERALD + "15",
+          border: EMERALD + "30",
+          label: "Đã thanh toán",
+        };
       case "TERMINATED":
-        return { color: ROSE, bg: ROSE + "15", border: ROSE + "30", label: "Đã hủy" };
+        return {
+          color: ROSE,
+          bg: ROSE + "15",
+          border: ROSE + "30",
+          label: "Đã hủy",
+        };
       case "PENDING":
-        return { color: AMBER, bg: AMBER + "15", border: AMBER + "30", label: "Chờ ký" };
+        return {
+          color: AMBER,
+          bg: AMBER + "15",
+          border: AMBER + "30",
+          label: "Chờ ký",
+        };
       default:
-        return { color: TEXT_MUTED, bg: TEXT_MUTED + "15", border: TEXT_MUTED + "30", label: status };
+        return {
+          color: TEXT_MUTED,
+          bg: TEXT_MUTED + "15",
+          border: TEXT_MUTED + "30",
+          label: status,
+        };
     }
   };
 
@@ -84,29 +122,49 @@ export default function WorkHistoryScreen({ navigation }) {
       >
         <View style={styles.cardHeader}>
           <View style={styles.titleArea}>
-             <Text style={styles.jobTitle} numberOfLines={1}>{item.job_title || "Công việc #" + item.id}</Text>
-             <Text style={styles.clientName}>Đối tác: {item.client_name || "N/A"}</Text>
+            <Text style={styles.jobTitle} numberOfLines={1}>
+              {item.job_title || "Công việc #" + item.id}
+            </Text>
+            <Text style={styles.clientName}>
+              Đối tác: {item.client_name || "N/A"}
+            </Text>
           </View>
-          <View style={[styles.statusBadge, { backgroundColor: statusStyle.bg, borderColor: statusStyle.border }]}>
-            <Text style={[styles.statusText, { color: statusStyle.color }]}>{statusStyle.label}</Text>
+          <View
+            style={[
+              styles.statusBadge,
+              {
+                backgroundColor: statusStyle.bg,
+                borderColor: statusStyle.border,
+              },
+            ]}
+          >
+            <Text style={[styles.statusText, { color: statusStyle.color }]}>
+              {statusStyle.label}
+            </Text>
           </View>
         </View>
-        
+
         <View style={styles.infoRow}>
           <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>Tổng giá trị</Text>
-              <Text style={styles.infoValue}>{getFormatPrice(item.total_amount)}</Text>
+            <Text style={styles.infoLabel}>Tổng giá trị</Text>
+            <Text style={styles.infoValue}>
+              {getFormatPrice(item.total_amount)}
+            </Text>
           </View>
           <View style={styles.divider} />
           <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>Ngày bắt đầu</Text>
-              <Text style={styles.infoValue}>{new Date(item.created_at).toLocaleDateString('vi-VN')}</Text>
+            <Text style={styles.infoLabel}>Ngày bắt đầu</Text>
+            <Text style={styles.infoValue}>
+              {new Date(item.created_at).toLocaleDateString("vi-VN")}
+            </Text>
           </View>
         </View>
 
         <View style={styles.cardFooter}>
-           <Text style={styles.footerNote}>Chi tiết trạng thái: {item.status}</Text>
-           <Ionicons name="chevron-forward" size={16} color={CYAN_ACCENT} />
+          <Text style={styles.footerNote}>
+            Chi tiết trạng thái: {item.status}
+          </Text>
+          <Ionicons name="chevron-forward" size={16} color={CYAN_ACCENT} />
         </View>
       </TouchableOpacity>
     );
@@ -122,24 +180,39 @@ export default function WorkHistoryScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-       <View style={styles.header}>
-          <Text style={styles.headerTitle}>Lịch sử công việc</Text>
-          <Text style={styles.headerSubtitle}>Theo dõi quá trình làm việc của bạn tại FAF</Text>
-       </View>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Lịch sử công việc</Text>
+        <Text style={styles.headerSubtitle}>
+          Theo dõi quá trình làm việc của bạn tại FAF
+        </Text>
+      </View>
 
       <FlatList
         data={contracts}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContent}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={CYAN_ACCENT} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={CYAN_ACCENT}
+          />
+        }
         ListEmptyComponent={
           <View style={styles.empty}>
             <View style={styles.emptyIconWrap}>
-              <Ionicons name="briefcase-outline" size={64} color={CYAN_ACCENT} />
+              <Ionicons
+                name="briefcase-outline"
+                size={64}
+                color={CYAN_ACCENT}
+              />
             </View>
             <Text style={styles.emptyTitle}>Chưa có lịch sử</Text>
-            <Text style={styles.emptyText}>Bạn chưa có hợp đồng nào được khởi tạo. Hãy ứng tuyển và bắt đầu ngay!</Text>
+            <Text style={styles.emptyText}>
+              Bạn chưa có hợp đồng nào được khởi tạo. Hãy ứng tuyển và bắt đầu
+              ngay!
+            </Text>
           </View>
         }
       />
